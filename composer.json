@@ -1,0 +1,22 @@
+{
+    "name": "phuntime/phuntime",
+    "description": "Run PHP Apps on FaaS platforms",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.2",
+        "vimeo/psalm": "^3.11"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "pizzaminded",
+            "email": "mikolajczajkowsky@gmail.com"
+        }
+    ],
+    "require": {
+        "psr/log": "^1.1",
+        "nyholm/psr7": "^1.3",
+        "symfony/http-foundation": "^5.1",
+        "symfony/psr-http-message-bridge": "^2.0"
+    }
+}
