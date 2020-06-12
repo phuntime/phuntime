@@ -37,9 +37,9 @@ class Handler
     protected ContextInterface $context;
 
     /**
-     * @var FunctionInterface|null
+     * @var Psr7FunctionInterface|HttpFoundationFunctionInterface|null
      */
-    protected ?FunctionInterface $function = null;
+    protected $function = null;
 
     /**
      * @var HttpFoundationFactoryInterface|null
@@ -52,9 +52,9 @@ class Handler
     protected ?HttpMessageFactoryInterface $psrHttpFactory = null;
 
     /**
-     * Handler constructor.
      * @param RuntimeInterface $runtime
      * @param ContextInterface $context
+     * @psalm-param Psr7FunctionInterface|HttpFoundationFunctionInterface|null $function
      * @param FunctionInterface|null $function
      */
     protected function __construct(
@@ -70,7 +70,7 @@ class Handler
 
     /**
      * @param RuntimeInterface $runtime
-     * @return static
+     * @return self
      */
     public static function fromRuntime(RuntimeInterface $runtime): self
     {

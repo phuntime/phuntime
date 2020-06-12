@@ -8,6 +8,9 @@ use Phuntime\Core\FunctionHandler\FunctionInterface;
 
 interface ContextInterface
 {
+    /**
+     * @psalm-return \Phuntime\Core\FunctionHandler\Psr7FunctionInterface|\Phuntime\Core\FunctionHandler\HttpFoundationFunctionInterface
+     */
     public function getFunction(): FunctionInterface;
 
 }
