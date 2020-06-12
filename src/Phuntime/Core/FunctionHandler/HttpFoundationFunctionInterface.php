@@ -7,7 +7,7 @@ namespace Phuntime\Core\FunctionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-interface HttpFoundationFunctionInterface
+interface HttpFoundationFunctionInterface extends FunctionInterface
 {
 
     public function handle(Request $request): Response;
