@@ -46,4 +46,22 @@ and reuse them in many requests!. Building your code once can boost your app, bu
 That means that all things that depend on request object should be handled/reinstantiated in `handle()` method. 
 
 
+## Local Development, Test and CI Tools
+
+- [LocalStack](https://github.com/localstack/localstack) - A fully functional local AWS cloud stack
+- [Serverless Framework](https://www.serverless.com/) - With some offline plugins for development/CI 
+
+Which one will be used for CI - *Research needed*
+
+## Building runtimes
+
+All commands must be run from project root.
+
+**make && docker & linux/osx required**.
+
+### AWS:
+
+dev build:
+
+``make build-aws-dev``
 

@@ -1,0 +1,8 @@
+#!/opt/bin/php
+<?php
+declare(strict_types=1);
+
+require_once 'vendor/autoload.php';
+error_log(json_encode($_ENV));
+$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
+$handler = \Phuntime\Core\Handler::fromRuntime($runtime);
