@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from "@aws-cdk/aws-lambda";
+import * as apigateway from "@aws-cdk/aws-apigateway";
 
 export class ExampleStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -24,6 +25,22 @@ export class ExampleStack extends cdk.Stack {
 
         helloFunction.addLayers(phpRuntimeLayer);
 
+        const lambdaGateway = new apigateway.LambdaRestApi(this, 'HelloGateway', {
+            handler: helloFunction,
+            deployOptions: {
+                loggingLevel: apigateway.MethodLoggingLevel.INFO,
+                dataTraceEnabled: false
+            }
+
+        });
+
+        /**
+         * These two parameters are required for passing $_GET and $_POST data to function
+         */
+        lambdaGateway.addRequestValidator('HelloRequestValidator', {
+            validateRequestParameters: true,
+            validateRequestBody: true,
+        });
 
     }
 }

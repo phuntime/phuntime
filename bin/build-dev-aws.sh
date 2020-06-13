@@ -9,11 +9,17 @@ echo $CONTAINER_ID
 printf "Checking PHP version\n"
 docker exec -it $CONTAINER_ID /opt/php/bin/php -v
 
-printf "Building runtime build dir\n"
-mkdir -p build
-mkdir -p "build/runtime"
-mkdir -p "build/runtime/bin"
-docker cp $CONTAINER_ID:/opt/php/bin/php ./build/runtime/bin/php
-cp ./lambda/bootstrap ./build/runtime/bootstrap
-chmod +x ./build/runtime/bootstrap
-chmod +x ./build/runtime/bin/php
+# copy built runtime and bootstrap file to examples dir to be handled by aws-cdk
+printf "Building example runtime build dir\n"
+
+EXAMPLE_DIR=./../../example/phuntime-build
+
+mkdir -p $EXAMPLE_DIR/bin
+
+docker cp $CONTAINER_ID:/opt/php/bin/php $EXAMPLE_DIR/bin/php
+cp ./bootstrap $EXAMPLE_DIR/bootstrap
+
+chmod +x $EXAMPLE_DIR/bootstrap
+chmod +x $EXAMPLE_DIR/bin/php
+
+printf "runtime has been moved to example dir\n"
