@@ -57,7 +57,7 @@ Which one will be used for CI - *Research needed*
 
 All commands must be run from project root.
 
-**make && docker & linux/osx required**.
+**make & docker & linux/osx required.**.
 
 ### AWS:
 
