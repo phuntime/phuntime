@@ -1,6 +1,7 @@
 # Welcome to your Phuntime CDK TypeScript project!
 
-This is a example project for Deploying Phuntime-based functions to AWS using Typescript and CDK.
+This project is used to test development versions of Phuntime in AWS/Local stack.
+
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 

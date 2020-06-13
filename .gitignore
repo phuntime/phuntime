@@ -2,14 +2,14 @@
 /vendor/
 /composer.lock
 
-example/phuntime-build
-example/*.js
-example/!jest.config.js
-example/*.d.ts
-example/node_modules
-example/# CDK asset staging directory
-example/.cdk.staging
-example/cdk.out
-example/# Parcel build directories
-example/.cache
-example/.build
+resources/cdk/phuntime-build
+resources/cdk/*.js
+resources/cdk/!jest.config.js
+resources/cdk/*.d.ts
+resources/cdk/node_modules
+# CDK asset staging directory
+resources/cdk/.cdk.staging
+resources/cdk/cdk.out
+# Parcel build directories
+resources/cdk/.cache
+resources/cdk/.build

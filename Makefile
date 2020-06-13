@@ -6,5 +6,5 @@ build-aws-dev:
 #build and deploy development AWS runtime
 deploy-aws-dev:
 	./bin/build-dev-aws.sh
-	cd example && cdk deploy --verbose --require-approval never
+	cd resources/cdk && cdk deploy --verbose --require-approval never
 
