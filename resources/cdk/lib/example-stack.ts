@@ -11,6 +11,13 @@ export class ExampleStack extends cdk.Stack {
          * Add layer with our compiled runtime
          */
         const phpRuntimeLayer = new lambda.LayerVersion(this, 'PHPRuntimeLayer', {
+            /**
+             * Path to custom runtime.
+             * A directory passed here must have a given structure:
+             *
+             * - /bootstrap - executable file
+             * - /bin/php - compiled PHP Executable
+             */
             code: lambda.Code.fromAsset('phuntime-build')
         })
 
@@ -18,9 +25,21 @@ export class ExampleStack extends cdk.Stack {
          * This is how our function must be defined in CDK
          */
         const helloFunction = new lambda.Function(this, 'HelloFunction', {
+            /**
+             * Let AWS know, that this function will use a custom runtime.
+             */
             runtime: lambda.Runtime.PROVIDED,
-            code: lambda.Code.fromAsset('build'), //Path to our code
-            handler: 'hello' //Path to file which returns function definition object (see README.md for details)
+            /**
+             * Path to your function code.
+             * When dot (".") passed, CDK will zip your current project directory
+             * (in this case, whole ./resources/cdk will be passed to AWS)
+             */
+            code: lambda.Code.fromAsset('.'),
+            /**
+             * Path to file which returns function definition object (see README.md for details)
+             * Must be relative to directory passed in "code" property. '.php' suffix required.
+             */
+            handler: 'src/phuntime.php'
         });
 
         helloFunction.addLayers(phpRuntimeLayer);
