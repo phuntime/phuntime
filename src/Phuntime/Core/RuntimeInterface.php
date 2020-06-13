@@ -38,4 +38,14 @@ interface RuntimeInterface
      */
     public function respondToRequest(string $requestId, ResponseInterface $response): void;
 
+
+    public function handleInitializationException(\Throwable $throwable);
+
+    /**
+     * Every runtime has different approach for exception handling. Using Lambda we have to return an exit code and it
+     * will reinstantiate the bootstrap, but Alibaba can handle exceptions and it will reinstantiate themself automatically.
+     *
+     * @return bool
+     */
+    public function canHandleExceptions(): bool;
 }

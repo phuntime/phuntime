@@ -21,6 +21,29 @@ class ErrorMessage
     protected string $errorMessage;
 
     /**
+     * ErrorMessage constructor.
+     * @param string $errorMessage
+     * @param string $errorType
+     */
+    protected function __construct(string $errorMessage, string $errorType)
+    {
+        $this->errorMessage = $errorMessage;
+        $this->errorType = $errorType;
+    }
+
+    /**
+     * @param \Throwable $throwable
+     * @return ErrorMessage
+     */
+    public static function fromThrowable(\Throwable $throwable)
+    {
+        return new self(
+            $throwable->getMessage(),
+            get_class($throwable)
+        );
+    }
+
+    /**
      * @return string
      */
     public function getErrorType(): string

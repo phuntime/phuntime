@@ -27,6 +27,11 @@ class Handler
     public const VERSION = '0.0.1';
 
     /**
+     * @var int
+     */
+    public const ERROR_INITIALIZATION = 1;
+
+    /**
      * @var RuntimeInterface
      */
     protected RuntimeInterface $runtime;
@@ -82,17 +87,32 @@ class Handler
     }
 
 
+    /**
+     * @return int Error Code
+     * @throws Throwable
+     */
     public function run()
     {
         $this->runtime->getLogger()->debug('Phuntime is up & running & waiting for events');
 
-        if ($this->function === null) {
-            $this->function = $this->context->getFunction();
-            $this->runtime->getLogger()->debug('A function ' . get_class($this->function) . ' has been passed by project to handler.');
-        }
+        try {
+            if ($this->function === null) {
+                $this->function = $this->context->getFunction();
+                $this->runtime->getLogger()->debug('A function ' . get_class($this->function) . ' has been passed by project to handler.');
+            }
 
-        //warm up your application
-        $this->function->boot();
+            //warm up your application
+            $this->function->boot();
+
+        } catch (\Throwable $exception) {
+            $this->runtime->handleInitializationException($exception);
+
+            if ($this->runtime->canHandleExceptions()) {
+                throw $exception;
+            }
+
+            return self::ERROR_INITIALIZATION;
+        }
 
         while (true) {
             try {

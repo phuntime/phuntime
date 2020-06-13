@@ -40,22 +40,6 @@ class AwsRuntime implements RuntimeInterface
 
 
     /**
-     * Emits error that occured during runtime initialization
-     * @param ErrorMessage $errorMessage
-     */
-    public function sendInitializationError(ErrorMessage $errorMessage)
-    {
-        //Also send to stderr
-        $this->getLogger()->emergency(
-            sprintf(
-                'Emergency Error: %s (%s)',
-                $errorMessage->getErrorMessage(),
-                $errorMessage->getErrorType()
-            ),
-        );
-    }
-
-    /**
      * Emits error occured during event handling
      * @param string $requestId
      * @param ErrorMessage $errorMessage
@@ -73,5 +57,28 @@ class AwsRuntime implements RuntimeInterface
             ),
             $stackTrace
         );
+    }
+
+    /**
+     * @param \Throwable $throwable
+     */
+    public function handleInitializationException(\Throwable $throwable)
+    {
+        //Also send to stderr
+        $this->getLogger()->emergency(
+            sprintf(
+                'Emergency Error: %s (%s)',
+                $throwable->getMessage(),
+                get_class($throwable)
+            ),
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function canHandleExceptions(): bool
+    {
+        return false;
     }
 }
