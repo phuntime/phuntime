@@ -22,9 +22,17 @@ class AwsRuntime implements RuntimeInterface
      */
     protected AwsContext $context;
 
+    /**
+     * @var AwsLogger
+     */
+    protected AwsLogger $logger;
+
+    /**
+     * @return LoggerInterface
+     */
     public function getLogger(): LoggerInterface
     {
-        // TODO: Implement getLogger() method.
+        return $this->logger;
     }
 
     public function getNextRequest(): ServerRequestInterface
@@ -37,9 +45,12 @@ class AwsRuntime implements RuntimeInterface
         // TODO: Implement respondToRequest() method.
     }
 
+    /**
+     * @return ContextInterface
+     */
     public function getContext(): ContextInterface
     {
-        // TODO: Implement getContext() method.
+        return $this->context;
     }
 
 
@@ -94,6 +105,7 @@ class AwsRuntime implements RuntimeInterface
     {
         $self = new self();
         $self->context = AwsContext::fromArray($_ENV);
+        $self->logger = new AwsLogger();
 
         return $self;
     }
