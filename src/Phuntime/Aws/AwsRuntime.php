@@ -101,4 +101,36 @@ class AwsRuntime implements RuntimeInterface
 
         return $self;
     }
+
+    protected function request(string $method, string $path, string $body, string $contentType): string
+    {
+        //normalize HTTP Method
+        $method = strtoupper($method);
+
+        $url = sprintf(
+            'http://%s/2018-06-01/runtime/%s',
+            $this->context->getParameter('AWS_LAMBDA_RUNTIME_API'),
+            $path
+        );
+
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        if ($method == 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Length: ' . strlen($body),
+                'Content-Type: ' . $contentType,
+            ]);
+        }
+
+        $result = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $result;
+    }
 }
