@@ -2,6 +2,11 @@
     "name": "phuntime/phuntime",
     "description": "Run PHP Apps on FaaS platforms",
     "type": "library",
+    "autoload": {
+        "psr-0": {
+            "Phuntime\\": "src/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.2",
         "vimeo/psalm": "^3.11"

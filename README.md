@@ -58,6 +58,7 @@ Which one will be used for CI - *Research needed*
 ### For PhpStorm users:
 
 To prevent code completion issues, exclude given directories:
+- resources/cdk/cdk.out
 - resources/function/vendor
 - resources/function/src/Phuntime/Aws
 - resources/function/src/Phuntime/Core
