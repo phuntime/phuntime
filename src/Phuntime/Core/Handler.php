@@ -27,11 +27,6 @@ class Handler
     public const VERSION = '0.0.1';
 
     /**
-     * @var int
-     */
-    public const ERROR_INITIALIZATION = 1;
-
-    /**
      * @var RuntimeInterface
      */
     protected RuntimeInterface $runtime;
@@ -88,53 +83,18 @@ class Handler
 
 
     /**
-     * @return int Error Code
      * @throws Throwable
      */
-    public function run()
+    public function boot()
     {
+        if ($this->function === null) {
+            $this->function = $this->context->getFunction();
+            $this->runtime->getLogger()->debug('A function ' . get_class($this->function) . ' has been passed by project to handler.');
+        }
+
+        //warm up your application
+        $this->function->boot();
         $this->runtime->getLogger()->debug('Phuntime is up & running & waiting for events');
-
-        try {
-            if ($this->function === null) {
-                $this->function = $this->context->getFunction();
-                $this->runtime->getLogger()->debug('A function ' . get_class($this->function) . ' has been passed by project to handler.');
-            }
-
-            //warm up your application
-            $this->function->boot();
-
-        } catch (\Throwable $exception) {
-            $this->runtime->handleInitializationException($exception);
-
-            //TODO: this fragment should be handled in runtime
-            if ($this->runtime->canHandleExceptions()) {
-                throw $exception;
-            }
-
-            return self::ERROR_INITIALIZATION;
-        }
-
-        //TODO: this loop also should be moved to runtime,  its hard to test this fragment without any 3rd party
-        while (true) {
-            try {
-                $request = $this->runtime->getNextRequest();
-
-                if ($this->function instanceof HttpFoundationFunctionInterface) {
-                    $request = $this->getHttpFoundationFactory()->createRequest($request);
-                    $response = $this->function->handle($request);
-                    $psrResponse = $this->getHttpMessageFactory()->createResponse($response);
-                    $this->runtime->respondToRequest('', $psrResponse);
-                } elseif ($this->function instanceof Psr7FunctionInterface) {
-                    $response = $this->function->handle($request);
-                    $this->runtime->respondToRequest('', $response);
-                }
-
-
-            } catch (Throwable $exception) {
-
-            }
-        }
     }
 
     protected function getHttpFoundationFactory(): HttpFoundationFactoryInterface

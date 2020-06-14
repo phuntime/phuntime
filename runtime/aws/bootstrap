@@ -2,6 +2,10 @@
 <?php
 declare(strict_types=1);
 
+
+use Phuntime\Core\FunctionHandler\HttpFoundationFunctionInterface;
+use Phuntime\Core\FunctionHandler\Psr7FunctionInterface;
+
 /**
  * Include vendors.
  * This is ridiculously important as we do not include phuntime in custom runtime, this library should be delivered
@@ -9,7 +13,37 @@ declare(strict_types=1);
  *
  * @noinspection PhpIncludeInspection
  */
-require_once getenv('LAMBDA_TASK_ROOT').'/vendor/autoload.php';
+require_once getenv('LAMBDA_TASK_ROOT') . '/vendor/autoload.php';
 
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
 $handler = \Phuntime\Core\Handler::fromRuntime($runtime);
+
+try {
+    $handler->boot();
+} catch (\Throwable $exception) {
+    error_log($exception->getMessage());
+    error_log($exception->getTraceAsString());
+    $runtime->handleInitializationException($exception);
+    return 1;
+}
+
+//TODO: this loop also should be moved to runtime,  its hard to test this fragment without any 3rd party
+while (true) {
+    try {
+        $request = $this->runtime->getNextRequest();
+
+        if ($this->function instanceof HttpFoundationFunctionInterface) {
+            $request = $this->getHttpFoundationFactory()->createRequest($request);
+            $response = $this->function->handle($request);
+            $psrResponse = $this->getHttpMessageFactory()->createResponse($response);
+            $this->runtime->respondToRequest('', $psrResponse);
+        } elseif ($this->function instanceof Psr7FunctionInterface) {
+            $response = $this->function->handle($request);
+            $this->runtime->respondToRequest('', $response);
+        }
+
+
+    } catch (Throwable $exception) {
+
+    }
+}
