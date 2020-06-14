@@ -17,6 +17,10 @@ use Psr\Log\LoggerInterface;
  */
 class AwsRuntime implements RuntimeInterface
 {
+    /**
+     * @var AwsContext
+     */
+    protected AwsContext $context;
 
     public function getLogger(): LoggerInterface
     {
@@ -88,6 +92,9 @@ class AwsRuntime implements RuntimeInterface
      */
     public static function fromEnvironment(): self
     {
+        $self = new self();
+        $self->context = AwsContext::fromArray($_ENV);
 
+        return $self;
     }
 }

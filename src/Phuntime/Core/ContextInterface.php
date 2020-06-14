@@ -13,4 +13,9 @@ interface ContextInterface
      */
     public function getFunction(): FunctionInterface;
 
+    /**
+     * @param string $key
+     * @return string|int|array
+     */
+    public function getParameter(string $key);
 }
