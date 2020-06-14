@@ -51,9 +51,15 @@ class AwsRuntime implements RuntimeInterface
             return RequestBuilder::buildPsr7Request($content);
         }
 
-        throw new \RuntimeException('Unsupported event given');
+        throw new \RuntimeException('Unsupported event received');
     }
 
+    /**
+     * All HTTP Responses must be converted to API Gateway Proxy Result
+     * @see https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-output-format
+     * @param string $requestId
+     * @param ResponseInterface $response
+     */
     public function respondToRequest(string $requestId, ResponseInterface $response): void
     {
         // TODO: Implement respondToRequest() method.
@@ -77,6 +83,7 @@ class AwsRuntime implements RuntimeInterface
     public function sendInvocationError(string $requestId, ErrorMessage $errorMessage, array $stackTrace = [])
     {
 
+
         $this->getLogger()->critical(
             sprintf(
                 'Error occured during request #%s execution: %s (%s)',
@@ -93,6 +100,14 @@ class AwsRuntime implements RuntimeInterface
      */
     public function handleInitializationException(\Throwable $throwable)
     {
+        $output = [
+            'errorMessage' => sprintf('InitializationException Occured: "%s", see CloudWatch logs for details.', $throwable->getMessage()),
+            'errorType' => get_class($throwable)
+        ];
+
+        $output = json_encode($output);
+        $this->request('POST', 'init/error', $output, 'application/json');
+
         //Also send to stderr
         $this->getLogger()->emergency(
             sprintf(
@@ -100,6 +115,7 @@ class AwsRuntime implements RuntimeInterface
                 $throwable->getMessage(),
                 get_class($throwable)
             ),
+            $throwable->getTrace()
         );
     }
 
