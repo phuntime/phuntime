@@ -21,6 +21,8 @@ The location of this file is defined  in your function definition:
 
 A path must be relative to your project root.
 
+If given file will be not found, Phuntime will attempt to load a `.phuntime.php` file. If this file
+also would not be found, InitializationException will be raised.
 
 
 Example file
