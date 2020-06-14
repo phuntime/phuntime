@@ -38,4 +38,14 @@ class RequestBuilderTest extends TestCase
         $this->assertEquals($expected, $queryStringParams);
 
     }
+
+    public function testRequestIsAttributeExists()
+    {
+        $event = $this->getApiGatewayEvent(1);
+
+        $request = RequestBuilder::buildPsr7Request($event);
+
+
+        $this->assertEquals('c6af9ac6-7b61-11e6-9a41-93e8deadbeef', $request->getAttribute('REQUEST_ID'));
+    }
 }
