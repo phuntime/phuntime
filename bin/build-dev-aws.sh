@@ -26,6 +26,9 @@ chmod +x $CDK_RUNTIME_DIR/bin/php
 printf "Copying sources to cdk project\n"
 cp ./../../composer.json $CDK_PROJECT_DIR/composer.json
 cp ./../../composer.lock $CDK_PROJECT_DIR/composer.lock
+
+rm -rf $CDK_PROJECT_DIR/src/Phuntime/Core
+rm -rf $CDK_PROJECT_DIR/src/Phuntime/Aws
 cp -r ./../../src/Phuntime/Core $CDK_PROJECT_DIR/src/Phuntime/Core
 #let's face it , other providers are not so heavily required here
 cp -r ./../../src/Phuntime/Aws $CDK_PROJECT_DIR/src/Phuntime/Aws
