@@ -130,6 +130,7 @@ class Handler
     {
         if ($event instanceof ServerRequestInterface) {
             $this->handleApiGatewayEvent($event);
+            return;
         }
 
         throw new \RuntimeException('Unsupported event given');
