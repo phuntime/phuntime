@@ -32,9 +32,9 @@ export class ExampleStack extends cdk.Stack {
             /**
              * Path to your function code.
              * When dot (".") passed, CDK will zip your current project directory
-             * (in this case, whole ./resources/cdk will be passed to AWS)
+             * (in this case, whole /resources/function will be passed to AWS)
              */
-            code: lambda.Code.fromAsset('.'),
+            code: lambda.Code.fromAsset('./../function'),
             /**
              * Path to file which returns function definition object (see README.md for details)
              * Must be relative to directory passed in "code" property. '.php' suffix required.

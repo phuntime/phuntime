@@ -13,8 +13,8 @@ resources/cdk/cdk.out
 # Parcel build directories
 resources/cdk/.cache
 resources/cdk/.build
-resources/cdk/composer.lock
-resources/cdk/composer.json
-resources/cdk/vendor
-resources/cdk/src/Phuntime/Core
-resources/cdk/src/Phuntime/Aws
+resources/function/composer.lock
+resources/function/composer.json
+resources/function/vendor
+resources/function/src/Phuntime/Core
+resources/function/src/Phuntime/Aws

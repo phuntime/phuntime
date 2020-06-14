@@ -11,8 +11,8 @@ docker exec -it $CONTAINER_ID /opt/php/bin/php -v
 
 printf "Building example runtime build dir\n"
 
-CDK_PROJECT_DIR=./../../resources/cdk
-CDK_RUNTIME_DIR=$CDK_PROJECT_DIR/phuntime-build
+CDK_PROJECT_DIR=./../../resources/function
+CDK_RUNTIME_DIR=./../../resources/cdk/phuntime-build
 
 mkdir -p $CDK_RUNTIME_DIR/bin
 
