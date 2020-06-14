@@ -7,6 +7,12 @@
             "Phuntime\\": "src/"
         }
     },
+
+    "autoload-dev": {
+        "psr-0": {
+            "Phuntime\\": "tests/"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "^9.2",
         "vimeo/psalm": "^3.11"
