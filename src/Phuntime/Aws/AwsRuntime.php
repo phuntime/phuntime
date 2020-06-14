@@ -44,11 +44,14 @@ class AwsRuntime implements RuntimeInterface
      */
     public function getNextRequest(): object
     {
-        $contentBody = $this->request('GET', 'invocation/next');
+        [$contentBody, $headers] = $this->request('GET', 'invocation/next');
         $content = json_decode($contentBody, true);
 
         if ($this->classifier->isApiGatewayProxyEvent($content)) {
-            return RequestBuilder::buildPsr7Request($content);
+            //This is the only place we have headers from Lambda runtime, so we need to add request id here
+            $requestId = $headers['lambda-runtime-aws-request-id'];
+            return RequestBuilder::buildPsr7Request($content)
+                ->withAttribute('REQUEST_ID', $requestId);
         }
 
         throw new \RuntimeException('Unsupported event received');
