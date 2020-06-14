@@ -39,11 +39,19 @@ class AwsRuntime implements RuntimeInterface
         return $this->logger;
     }
 
+    /**
+     * @return object
+     */
     public function getNextRequest(): object
     {
-        $content = $this->request('GET', 'invocation/next');
+        $contentBody = $this->request('GET', 'invocation/next');
+        $content = json_decode($contentBody);
 
-        error_log($content);
+        if ($this->classifier->isApiGatewayProxyEvent($content)) {
+            return RequestBuilder::buildPsr7Request($content);
+        }
+
+        throw new \RuntimeException('Unsupported event given');
     }
 
     public function respondToRequest(string $requestId, ResponseInterface $response): void
