@@ -90,14 +90,6 @@ class AwsRuntime implements RuntimeInterface
     }
 
     /**
-     * @inheritDoc
-     */
-    public function canHandleExceptions(): bool
-    {
-        return false;
-    }
-
-    /**
      * Creates a new instance of AwsRuntime with all configuration taken from ennvironment variables
      * @return static
      */
