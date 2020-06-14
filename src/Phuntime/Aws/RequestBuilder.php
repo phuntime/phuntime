@@ -37,9 +37,7 @@ class RequestBuilder
             $apiGatewayEvent['queryStringParameters'] ?? []
         );
 
-        $request = $request
-            ->withQueryParams($unifiedQueryParameters)
-            ->withAttribute('REQUEST_ID', $apiGatewayEvent['requestContext']['requestId']);
+        $request = $request->withQueryParams($unifiedQueryParameters);
 
         return $request;
     }
