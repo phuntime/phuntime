@@ -27,9 +27,9 @@ interface RuntimeInterface
 
     /**
      * Returns next request that has been received by server.
-     * @return ServerRequestInterface
+     * @return object
      */
-    public function getNextRequest(): ServerRequestInterface;
+    public function getNextRequest(): object;
 
     /**
      * @param string $requestId

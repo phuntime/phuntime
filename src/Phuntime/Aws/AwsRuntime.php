@@ -35,7 +35,7 @@ class AwsRuntime implements RuntimeInterface
         return $this->logger;
     }
 
-    public function getNextRequest(): ServerRequestInterface
+    public function getNextRequest(): object
     {
         // TODO: Implement getNextRequest() method.
     }
