@@ -71,7 +71,7 @@ class AwsRuntime implements RuntimeInterface
             'body' => $response->getBody()
         ];
 
-        $this->request('POST', 'invocation/'.$requestId.'/response', json_encode($proxyResult), 'application/json');
+        $this->request('POST', 'invocation/' . $requestId . '/response', json_encode($proxyResult), 'application/json');
     }
 
     /**
@@ -99,7 +99,7 @@ class AwsRuntime implements RuntimeInterface
             ];
 
             $output = json_encode($output);
-            $this->request('POST', 'invocation/'.$requestId . '/error', $output, 'application/json');
+            $this->request('POST', 'invocation/' . $requestId . '/error', $output, 'application/json');
         }
 
         $this->getLogger()->critical(
@@ -149,7 +149,7 @@ class AwsRuntime implements RuntimeInterface
         return $self;
     }
 
-    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): string
+    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): array
     {
         //normalize HTTP Method
         $method = strtoupper($method);
@@ -206,6 +206,6 @@ class AwsRuntime implements RuntimeInterface
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return $result;
+        return [$result, $headers];
     }
 }
