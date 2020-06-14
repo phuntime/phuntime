@@ -48,10 +48,16 @@ That means that all things that depend on request object should be handled/reins
 
 ## Local Development, Test and CI Tools
 
+### Tools used for local dev/CI
+
 - [LocalStack](https://github.com/localstack/localstack) - A fully functional local AWS cloud stack
 - [Serverless Framework](https://www.serverless.com/) - With some offline plugins for development/CI 
 
 Which one will be used for CI - *Research needed*
+
+### For PhpStorm users:
+
+Exclude directory `resources/cdk/vendor` to prevent code completion issues 
 
 ## Building runtimes
 
@@ -64,4 +70,8 @@ All commands must be run from project root.
 dev build:
 
 ``make build-aws-dev``
+
+dev deploy:
+
+``make deploy-aws-dev``
 
