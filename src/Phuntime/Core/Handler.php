@@ -7,6 +7,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Phuntime\Core\FunctionHandler\FunctionInterface;
 use Phuntime\Core\FunctionHandler\HttpFoundationFunctionInterface;
 use Phuntime\Core\FunctionHandler\Psr7FunctionInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
@@ -127,6 +128,37 @@ class Handler
      */
     public function handleEvent(object $event)
     {
+        if ($event instanceof ServerRequestInterface) {
+            $this->handleApiGatewayEvent($event);
+        }
 
+        throw new \RuntimeException('Unsupported event given');
+    }
+
+    /**
+     * Handles HTTP Requests
+     * @param ServerRequestInterface $request
+     */
+    protected function handleApiGatewayEvent(ServerRequestInterface $request)
+    {
+        $requestId = $request->getAttribute('REQUEST_ID');
+
+        try {
+            if ($this->function instanceof HttpFoundationFunctionInterface) {
+                $httpFoundationRequest = $this->getHttpFoundationFactory()->createRequest($request);
+                $httpFoundationResponse = $this->function->handle($httpFoundationRequest);
+                $this->runtime->respondToRequest(
+                    $requestId,
+                    $this->getHttpMessageFactory()->createResponse($httpFoundationResponse)
+                );
+                return;
+            }
+
+            $response = $this->function->handle($request);
+            $this->runtime->respondToRequest($requestId, $response);
+
+        } catch (\Throwable $exception) {
+            $this->runtime->handleInvocationError($exception, $requestId);
+        }
     }
 }
