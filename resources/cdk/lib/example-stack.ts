@@ -39,7 +39,11 @@ export class ExampleStack extends cdk.Stack {
              * Path to file which returns function definition object (see README.md for details)
              * Must be relative to directory passed in "code" property. '.php' suffix required.
              */
-            handler: 'src/phuntime.php'
+            handler: 'src/phuntime.php',
+            /**
+             * by default timeout is 3 seconds
+             */
+            timeout: cdk.Duration.seconds(30)
         });
 
         helloFunction.addLayers(phpRuntimeLayer);

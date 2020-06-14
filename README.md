@@ -47,6 +47,15 @@ That means that all things that depend on request object should be handled/reins
 
 ## Local Development, Test and CI Tools
 
+### Unit Tests
+
+``vendor/bin/phpunit``
+
+### Psalm static analysis
+
+``vendor/bin/psalm``
+
+
 ### Tools used for local dev/CI
 
 - [Docker](https://www.docker.com/) - for building PHP and runtime environments
