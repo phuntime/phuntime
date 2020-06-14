@@ -2,9 +2,7 @@
 
 Deploy your apps to FaaS platforms quickly.
 
-
-
-## I really want to know how to name this section but i dont know why (a.k.a how to integrate my app to work with Phuntime)
+## How to integrate my app to work with Phuntime?
 To allow your project to work with Phuntime, you need to create your instance of ``Psr7FunctionInterface|HttpFoundationFunctionInterface`` 
 and return them to Phuntime. This class will be called every time when any request or event will arrive. 
 There are three methods you have to implement:
@@ -15,17 +13,16 @@ and return a `Response` (PSR7 or HttpFoundation) object which will be returned t
 - `handleEvent()` - any non-http-request event (e.g. DynamoDb Event, S3Event itp) will be passed here.
 
 When you implement Function definition object, you should create a file where you instantiate them and return to Phuntime.
-The location of this file is defined  in your function definition:
+The location of this file should be defined in your function definition:
 
 - in AWS Lambda, a value from `handler` field will be used
 
 A path must be relative to your project root.
 
-If given file will be not found, Phuntime will attempt to load a `.phuntime.php` file. If this file
+If given file will be not found, Phuntime will attempt to load a `.phuntime.php` file from function root. If this file
 also would not be found, InitializationException will be raised.
 
-
-Example file
+Example file:
 ````
 //my-function.php
 
@@ -52,10 +49,14 @@ That means that all things that depend on request object should be handled/reins
 
 ### Tools used for local dev/CI
 
+- [Docker](https://www.docker.com/) - for building PHP and runtime environments
 - [LocalStack](https://github.com/localstack/localstack) - A fully functional local AWS cloud stack
 - [Serverless Framework](https://www.serverless.com/) - With some offline plugins for development/CI 
 
 Which one will be used for CI - *Research needed*
+
+### AWS Runtime testing & Development:
+- [AWS CDK](https://aws.amazon.com/cdk/) - For test function deployment
 
 ### For PhpStorm users:
 
