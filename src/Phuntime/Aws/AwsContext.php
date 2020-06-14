@@ -54,7 +54,13 @@ class AwsContext implements ContextInterface
                     return $functionDefinition;
                 }
 
-                throw new \RuntimeException('File %s should return instanceof FunctionInterface, %s returned', $pathToInclude, gettype($functionDefinition));
+                throw new \RuntimeException(
+                    sprintf(
+                        'File %s should return instanceof FunctionInterface, %s returned',
+                        $pathToInclude,
+                        gettype($functionDefinition)
+                    )
+                );
             }
         }
 
