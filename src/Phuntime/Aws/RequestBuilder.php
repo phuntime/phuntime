@@ -20,7 +20,27 @@ class RequestBuilder
      */
     public static function buildPsr7Request(array $apiGatewayEvent): ServerRequestInterface
     {
-        $request = new ServerRequest();
-//        $request->with
+        //TODO build _SERVER superglobal wannabe and pass them rest of required things
+        //TODO build full Uri object with host and stuff
+
+        $request = new ServerRequest(
+            $apiGatewayEvent['httpMethod'],
+            $apiGatewayEvent['path'],
+            $apiGatewayEvent['headers'],
+            $apiGatewayEvent['body'],
+            $apiGatewayEvent['requestContext']['protocol']
+        );
+
+
+        $unifiedQueryParameters = array_merge(
+            $apiGatewayEvent['multiValueQueryStringParameters'],
+            $apiGatewayEvent['queryStringParameters']
+        );
+
+        $request = $request
+            ->withQueryParams($unifiedQueryParameters)
+            ->withAttribute('REQUEST_ID', $apiGatewayEvent['requestContext']['requestId']);
+
+        return $request;
     }
 }
