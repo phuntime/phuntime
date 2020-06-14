@@ -162,6 +162,34 @@ class AwsRuntime implements RuntimeInterface
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        $headers = [];
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION,
+            function ($curl, $header) use (&$headers) {
+                $len = strlen($header);
+                $explodedHeader = explode(':', $header, 2);
+                if (count($explodedHeader) !== 2) {
+                    return $len;
+                }
+                list($name, $value) = $explodedHeader;
+                if (empty($value)) {
+                    return $len;
+                }
+
+                $name = strtolower(trim($name));
+                if (array_key_exists($name, $headers) === false) {
+                    $headers[$name] = trim($value);
+                } else {
+                    if (!is_array($headers[$name])) {
+                        $headers[$name] = array($headers[$name]);
+                    }
+                    $headers[$name][] = trim($value);
+                }
+
+                return $len;
+
+            }
+        );
+
         if ($method == 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
