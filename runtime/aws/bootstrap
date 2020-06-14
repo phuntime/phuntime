@@ -23,6 +23,6 @@ try {
 }
 
 while (true) {
-    $request = $this->runtime->getNextRequest();
+    $request = $runtime->getNextRequest();
     $handler->handleEvent($request);
 }
