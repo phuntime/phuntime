@@ -122,4 +122,11 @@ class Handler
         return $this->psrHttpFactory;
     }
 
+    /**
+     * @param object $event
+     */
+    public function handleEvent(object $event)
+    {
+
+    }
 }
