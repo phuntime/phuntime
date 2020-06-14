@@ -45,7 +45,7 @@ class AwsRuntime implements RuntimeInterface
     public function getNextRequest(): object
     {
         $contentBody = $this->request('GET', 'invocation/next');
-        $content = json_decode($contentBody);
+        $content = json_decode($contentBody, true);
 
         if ($this->classifier->isApiGatewayProxyEvent($content)) {
             return RequestBuilder::buildPsr7Request($content);
