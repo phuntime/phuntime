@@ -68,7 +68,7 @@ class AwsRuntime implements RuntimeInterface
         $proxyResult = [
             'statusCode' => $response->getStatusCode(),
             'multiValueHeaders' => $response->getHeaders(),
-            'body' => $response->getBody()
+            'body' => (string)$response->getBody()
         ];
 
         $this->request('POST', 'invocation/' . $requestId . '/response', json_encode($proxyResult), 'application/json');
