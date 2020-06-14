@@ -62,7 +62,13 @@ class AwsRuntime implements RuntimeInterface
      */
     public function respondToRequest(string $requestId, ResponseInterface $response): void
     {
-        // TODO: Implement respondToRequest() method.
+        $proxyResult = [
+            'statusCode' => $response->getStatusCode(),
+            'multiValueHeaders' => $response->getHeaders(),
+            'body' => $response->getBody()
+        ];
+
+        $this->request('POST', 'invocation/'.$requestId.'/response', json_encode($proxyResult), 'application/json');
     }
 
     /**
@@ -90,7 +96,7 @@ class AwsRuntime implements RuntimeInterface
             ];
 
             $output = json_encode($output);
-            $this->request('POST', $requestId . '/error', $output, 'application/json');
+            $this->request('POST', 'invocation/'.$requestId . '/error', $output, 'application/json');
         }
 
         $this->getLogger()->critical(
