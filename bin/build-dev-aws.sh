@@ -33,5 +33,6 @@ cp -r ./../../src/Phuntime/Aws $CDK_PROJECT_DIR/src/Phuntime/Aws
 cd $CDK_PROJECT_DIR && composer install
 
 
+printf "--- \n"
 printf "CDK project is ready to deploy.\n"
 printf "Run 'make deploy-aws-dev' in your repository root to deploy a development version to AWS.\n"

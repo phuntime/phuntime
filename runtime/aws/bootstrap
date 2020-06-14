@@ -2,7 +2,14 @@
 <?php
 declare(strict_types=1);
 
-require_once 'vendor/autoload.php';
-error_log(json_encode($_ENV));
+/**
+ * Include vendors.
+ * This is ridiculously important as we do not include phuntime in custom runtime, this library should be delivered
+ * in task depedencies.
+ *
+ * @noinspection PhpIncludeInspection
+ */
+require_once getenv('LAMBDA_TASK_ROOT').'/vendor/autoload.php';
+
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
 $handler = \Phuntime\Core\Handler::fromRuntime($runtime);

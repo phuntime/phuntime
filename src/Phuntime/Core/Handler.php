@@ -107,6 +107,7 @@ class Handler
         } catch (\Throwable $exception) {
             $this->runtime->handleInitializationException($exception);
 
+            //TODO: this fragment should be handled in runtime
             if ($this->runtime->canHandleExceptions()) {
                 throw $exception;
             }
@@ -114,6 +115,7 @@ class Handler
             return self::ERROR_INITIALIZATION;
         }
 
+        //TODO: this loop also should be moved to runtime,  its hard to test this fragment without any 3rd party
         while (true) {
             try {
                 $request = $this->runtime->getNextRequest();

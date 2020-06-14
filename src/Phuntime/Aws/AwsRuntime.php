@@ -81,4 +81,13 @@ class AwsRuntime implements RuntimeInterface
     {
         return false;
     }
+
+    /**
+     * Creates a new instance of AwsRuntime with all configuration taken from ennvironment variables
+     * @return static
+     */
+    public static function fromEnvironment(): self
+    {
+
+    }
 }
