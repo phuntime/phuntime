@@ -80,18 +80,25 @@ class AwsRuntime implements RuntimeInterface
      * @param ErrorMessage $errorMessage
      * @param array $stackTrace
      */
-    public function sendInvocationError(string $requestId, ErrorMessage $errorMessage, array $stackTrace = [])
+    public function handleInvocationError(\Throwable $exception, ?string $requestId = null): void
     {
 
+        if ($requestId !== null) {
+            $output = [
+                'errorMessage' => sprintf('InvocationError Occured: "%s", see CloudWatch logs for details.', $exception->getMessage()),
+                'errorType' => get_class($exception)
+            ];
+
+            $output = json_encode($output);
+            $this->request('POST', $requestId . '/error', $output, 'application/json');
+        }
 
         $this->getLogger()->critical(
             sprintf(
-                'Error occured during request #%s execution: %s (%s)',
-                $requestId,
-                $errorMessage->getErrorMessage(),
-                $errorMessage->getErrorType()
+                'InvocationError occured during request execution: %s ',
+                $exception->getMessage()
             ),
-            $stackTrace
+            $exception->getTrace()
         );
     }
 
@@ -111,7 +118,7 @@ class AwsRuntime implements RuntimeInterface
         //Also send to stderr
         $this->getLogger()->emergency(
             sprintf(
-                'Emergency Error: %s (%s)',
+                'InitializationException: %s (%s)',
                 $throwable->getMessage(),
                 get_class($throwable)
             ),

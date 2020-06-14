@@ -37,6 +37,13 @@ interface RuntimeInterface
      */
     public function respondToRequest(string $requestId, ResponseInterface $response): void;
 
+    /**
+     * @param \Throwable $exception
+     * @param string|null $requestId - may be null as not in any event RequestId is present
+     */
+    public function handleInvocationError(\Throwable $exception, ?string $requestId = null): void;
+
 
     public function handleInitializationException(\Throwable $throwable);
+
 }
