@@ -10,6 +10,11 @@
   "multiValueQueryStringParameters": {
     "foo": [
       "bar"
+    ],
+    "choice": [
+      "beamer",
+      "benz",
+      "bentley"
     ]
   },
   "pathParameters": {

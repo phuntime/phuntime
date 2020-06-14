@@ -9,13 +9,7 @@ use PHPUnit\Framework\TestCase;
 class ErrorClassifierTest extends TestCase
 {
 
-    public function apiGatewayEvents(): array
-    {
-        return [
-            [json_decode(file_get_contents(__DIR__ . '/../../fixtures/aws-apigateway-event-1.json'), true)],
-            [json_decode(file_get_contents(__DIR__ . '/../../fixtures/aws-apigateway-event-2.json'), true)]
-        ];
-    }
+    use AwsProvidersTrait;
 
 
     /**

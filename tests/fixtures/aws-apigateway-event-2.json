@@ -1,12 +1,10 @@
 {
   "body": "eyJ0ZXN0IjoiYm9keSJ9",
   "resource": "/{proxy+}",
-  "path": "/path/to/resource",
+  "path": "/",
   "httpMethod": "POST",
   "isBase64Encoded": true,
-  "queryStringParameters": {
-    "foo": "bar"
-  },
+  "queryStringParameters": null,
   "multiValueQueryStringParameters": null,
   "pathParameters": {
     "proxy": "/path/to/resource"

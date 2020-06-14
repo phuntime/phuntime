@@ -33,7 +33,7 @@ class RequestBuilder
 
 
         $unifiedQueryParameters = array_merge(
-            $apiGatewayEvent['multiValueQueryStringParameters'],
+            $apiGatewayEvent['multiValueQueryStringParameters'] ?? [],
             $apiGatewayEvent['queryStringParameters'] ?? []
         );
 
