@@ -7,7 +7,6 @@ namespace Phuntime\Aws;
 use Phuntime\Core\ContextInterface;
 use Phuntime\Core\RuntimeInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -28,6 +27,11 @@ class AwsRuntime implements RuntimeInterface
     protected AwsLogger $logger;
 
     /**
+     * @var EventClassifier
+     */
+    protected EventClassifier $classifier;
+
+    /**
      * @return LoggerInterface
      */
     public function getLogger(): LoggerInterface
@@ -37,7 +41,9 @@ class AwsRuntime implements RuntimeInterface
 
     public function getNextRequest(): object
     {
-        // TODO: Implement getNextRequest() method.
+        $content = $this->request('GET', 'invocation/next');
+
+        error_log($content);
     }
 
     public function respondToRequest(string $requestId, ResponseInterface $response): void
@@ -98,6 +104,7 @@ class AwsRuntime implements RuntimeInterface
         $self = new self();
         $self->context = AwsContext::fromArray($_ENV);
         $self->logger = new AwsLogger();
+        $self->classifier = new EventClassifier();
 
         return $self;
     }
