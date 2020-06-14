@@ -22,7 +22,7 @@ class EventClassifier
             return false;
         }
 
-        if (!isset($eventBody['multiValueQueryStringParameters'])) {
+        if (!array_key_exists('multiValueQueryStringParameters', $eventBody)) {
             return false;
         }
 
