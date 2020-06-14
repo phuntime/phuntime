@@ -25,7 +25,7 @@ class Handler
     /**
      * @var string
      */
-    public const VERSION = '0.0.1';
+    public const VERSION = '0.0.2';
 
     /**
      * @var RuntimeInterface
