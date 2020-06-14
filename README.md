@@ -57,7 +57,10 @@ Which one will be used for CI - *Research needed*
 
 ### For PhpStorm users:
 
-Exclude directory `resources/cdk/vendor` to prevent code completion issues 
+To prevent code completion issues, exclude given directories:
+- resources/function/vendor
+- resources/function/src/Phuntime/Aws
+- resources/function/src/Phuntime/Core
 
 ## Building runtimes
 
@@ -74,4 +77,9 @@ dev build:
 dev deploy:
 
 ``make deploy-aws-dev``
+
+You can combine them into a simple one-liner to build & deploy with a single click:
+
+``make build-aws-dev && make deploy-aws-dev``
+
 
