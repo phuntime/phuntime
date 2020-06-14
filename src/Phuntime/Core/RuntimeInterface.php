@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Phuntime\Core;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
 /**
