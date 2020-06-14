@@ -102,7 +102,7 @@ class AwsRuntime implements RuntimeInterface
         return $self;
     }
 
-    protected function request(string $method, string $path, string $body, string $contentType): string
+    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): string
     {
         //normalize HTTP Method
         $method = strtoupper($method);
