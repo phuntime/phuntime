@@ -6,9 +6,19 @@ namespace Phuntime\Core;
 
 use Phuntime\Core\FunctionHandler\FunctionInterface;
 
+/**
+ * Exposes some features that probably would be repeated in any ContextInterface
+ * @author pizzaminded <mikolajczajkowsky@gmail.com>
+ * @license MIT
+ */
 trait ContextTrait
 {
 
+    /**
+     * @param string $taskRoot
+     * @param string $handlerPath
+     * @return FunctionInterface
+     */
     protected function locateFunction(string $taskRoot, string $handlerPath)
     {
 
