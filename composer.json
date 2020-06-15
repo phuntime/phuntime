@@ -2,6 +2,7 @@
     "name": "phuntime/phuntime",
     "description": "Run PHP Apps on FaaS platforms",
     "type": "library",
+    "bin": ["bin/phuntime-local.php"],
     "autoload": {
         "psr-0": {
             "Phuntime\\": "src/"

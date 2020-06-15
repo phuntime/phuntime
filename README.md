@@ -47,6 +47,17 @@ That means that all things that depend on request object should be handled/reins
 
 ## Local Development, Test and CI Tools
 
+### Local Function development
+
+- Run terminal and ``cd`` to your function root
+- `php -S 127.0.0.1:8001 /path/to/your/task/vendor/phuntime-local.php`
+- Hit `http://127.0.0.1:8001` in your browser
+
+This will mock Phuntime handler, so you will be able to test your function locally. Because you are using PHP built-in 
+dev-server you can just refresh your page to reload your changes.
+*LocalHandler will use your vendors.*
+
+
 ### Unit Tests
 
 ``vendor/bin/phpunit``
