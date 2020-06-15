@@ -5,6 +5,7 @@ namespace Phuntime\Aws;
 
 
 use Phuntime\Core\ContextInterface;
+use Phuntime\Core\ContextTrait;
 use Phuntime\Core\FunctionHandler\FunctionInterface;
 
 /**
@@ -12,6 +13,8 @@ use Phuntime\Core\FunctionHandler\FunctionInterface;
  */
 class AwsContext implements ContextInterface
 {
+
+    use ContextTrait;
 
     /**
      * @var array<string, string|int|array>
@@ -36,35 +39,10 @@ class AwsContext implements ContextInterface
      */
     public function getFunction(): FunctionInterface
     {
-        $taskRoot = $this->getParameter('LAMBDA_TASK_ROOT');
-
-        $functionDefinitionFiles = [
-            $this->getParameter('_HANDLER'),
-            '.phuntime.php'
-        ];
-
-        foreach ($functionDefinitionFiles as $definitionFile) {
-            $pathToInclude = sprintf('%s/%s', $taskRoot, $definitionFile);
-
-            if (file_exists($pathToInclude)) {
-                /**  @noinspection PhpIncludeInspection */
-                $functionDefinition = include_once $pathToInclude;
-
-                if ($functionDefinition instanceof FunctionInterface) {
-                    return $functionDefinition;
-                }
-
-                throw new \RuntimeException(
-                    sprintf(
-                        'File %s should return instanceof FunctionInterface, %s returned',
-                        $pathToInclude,
-                        gettype($functionDefinition)
-                    )
-                );
-            }
-        }
-
-        throw new \RuntimeException(sprintf('Could not find any function definition file! Tried %s', json_encode($functionDefinitionFiles)));
+        return $this->locateFunction(
+            $this->getParameter('LAMBDA_TASK_ROOT'),
+            $this->getParameter('_HANDLER')
+        );
     }
 
     /**
