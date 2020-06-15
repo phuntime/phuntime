@@ -129,7 +129,7 @@ class Handler
     public function handleEvent(object $event)
     {
         if ($event instanceof ServerRequestInterface) {
-            $this->handleApiGatewayEvent($event);
+            $this->handleHttpEvent($event);
             return;
         }
 
@@ -140,7 +140,7 @@ class Handler
      * Handles HTTP Requests
      * @param ServerRequestInterface $request
      */
-    protected function handleApiGatewayEvent(ServerRequestInterface $request)
+    protected function handleHttpEvent(ServerRequestInterface $request)
     {
         $requestId = $request->getAttribute('REQUEST_ID');
 
