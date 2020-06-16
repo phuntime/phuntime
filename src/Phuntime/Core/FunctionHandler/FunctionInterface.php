@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Phuntime\Core\FunctionHandler;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerAwareInterface;
 
 /**
@@ -17,4 +19,6 @@ interface FunctionInterface extends LoggerAwareInterface
     public function handleEvent(object $event);
 
     public function boot();
+
+    public function handle(ServerRequestInterface $request): ResponseInterface;
 }

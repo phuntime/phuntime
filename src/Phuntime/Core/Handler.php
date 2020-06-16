@@ -3,15 +3,10 @@ declare(strict_types=1);
 
 namespace Phuntime\Core;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
 use Phuntime\Core\FunctionHandler\FunctionInterface;
 use Phuntime\Core\FunctionHandler\HttpFoundationFunctionInterface;
 use Phuntime\Core\FunctionHandler\Psr7FunctionInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
-use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Throwable;
 
 /**
@@ -38,24 +33,14 @@ class Handler
     protected ContextInterface $context;
 
     /**
-     * @var Psr7FunctionInterface|HttpFoundationFunctionInterface|null
+     * @var FunctionInterface
      */
-    protected $function = null;
+    protected ?FunctionInterface $function = null;
 
-    /**
-     * @var HttpFoundationFactoryInterface|null
-     */
-    protected ?HttpFoundationFactoryInterface $httpFoundationFactory = null;
-
-    /**
-     * @var HttpMessageFactoryInterface|null
-     */
-    protected ?HttpMessageFactoryInterface $psrHttpFactory = null;
 
     /**
      * @param RuntimeInterface $runtime
      * @param ContextInterface $context
-     * @psalm-param Psr7FunctionInterface|HttpFoundationFunctionInterface|null $function
      * @param FunctionInterface|null $function
      */
     protected function __construct(
@@ -98,30 +83,6 @@ class Handler
         $this->runtime->getLogger()->debug('Phuntime is up & running & waiting for events');
     }
 
-    protected function getHttpFoundationFactory(): HttpFoundationFactoryInterface
-    {
-        if ($this->httpFoundationFactory === null) {
-            $this->httpFoundationFactory = new HttpFoundationFactory();
-        }
-
-        return $this->httpFoundationFactory;
-    }
-
-    protected function getHttpMessageFactory(): HttpMessageFactoryInterface
-    {
-        if ($this->psrHttpFactory === null) {
-            $psr17Factory = new Psr17Factory();
-
-            $this->psrHttpFactory = new PsrHttpFactory(
-                $psr17Factory,
-                $psr17Factory,
-                $psr17Factory,
-                $psr17Factory
-            );
-        }
-
-        return $this->psrHttpFactory;
-    }
 
     /**
      * @param object $event
@@ -143,21 +104,9 @@ class Handler
     protected function handleHttpEvent(ServerRequestInterface $request)
     {
         $requestId = $request->getAttribute('REQUEST_ID');
-
         try {
-            if ($this->function instanceof HttpFoundationFunctionInterface) {
-                $httpFoundationRequest = $this->getHttpFoundationFactory()->createRequest($request);
-                $httpFoundationResponse = $this->function->handle($httpFoundationRequest);
-                $this->runtime->respondToRequest(
-                    $requestId,
-                    $this->getHttpMessageFactory()->createResponse($httpFoundationResponse)
-                );
-                return;
-            }
-
             $response = $this->function->handle($request);
             $this->runtime->respondToRequest($requestId, $response);
-
         } catch (\Throwable $exception) {
             $this->runtime->handleInvocationError($exception, $requestId);
         }

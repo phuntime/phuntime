@@ -3,13 +3,13 @@
 Deploy your apps to FaaS platforms quickly.
 
 ## How to integrate my app to work with Phuntime?
-To allow your project to work with Phuntime, you need to create your instance of ``Psr7FunctionInterface|HttpFoundationFunctionInterface`` 
+To allow your project to work with Phuntime, you need to create your instance of ``FunctionInterface`` 
 and return them to Phuntime. This class will be called every time when any request or event will arrive. 
 There are three methods you have to implement:
 
 - `boot()` - here you can warm your caches, build containers etc;
-- `handle()` - here you execute your request (depending of used interface, a PSR7 or HttpFoundation request is passed here)
-and return a `Response` (PSR7 or HttpFoundation) object which will be returned to client;
+- `handle()` - here you execute your request (PSR7 RequestInterface)
+and return a `Response` (PSR7 ResponseInterface) object which will be returned to client;
 - `handleEvent()` - any non-http-request event (e.g. DynamoDb Event, S3Event itp) will be passed here.
 
 When you implement Function definition object, you should create a file where you instantiate them and return to Phuntime.
