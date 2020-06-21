@@ -1,9 +1,9 @@
 {
-  "body": "eyJ0ZXN0IjoiYm9keSJ9",
+  "body": "{\"test\":\"body\"}",
   "resource": "/{proxy+}",
   "path": "/",
   "httpMethod": "POST",
-  "isBase64Encoded": true,
+  "isBase64Encoded": false,
   "queryStringParameters": null,
   "multiValueQueryStringParameters": null,
   "pathParameters": {
