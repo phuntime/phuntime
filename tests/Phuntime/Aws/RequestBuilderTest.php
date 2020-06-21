@@ -39,4 +39,25 @@ class RequestBuilderTest extends TestCase
 
     }
 
+    public function testUriContainsAllElements()
+    {
+        $event = $this->getApiGatewayEvent(1);
+
+        $request = RequestBuilder::buildPsr7Request($event);
+
+        $this->assertEquals('1234567890.execute-api.eu-central-1.amazonaws.com', $request->getUri()->getHost());
+        $this->assertEquals('/path/to/resource', $request->getUri()->getPath());
+
+    }
+
+
+    /**
+     * @dataProvider apiGatewayEvents
+     * @param array $apiGatewayEvent
+     */
+    public function testBase64Encoding(array $apiGatewayEvent)
+    {
+        $request = RequestBuilder::buildPsr7Request($apiGatewayEvent);
+        $this->assertEquals('{"test":"body"}', (string)$request->getBody());
+    }
 }

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Phuntime\Aws;
 
-use Nyholm\Psr7\Request;
 use Nyholm\Psr7\ServerRequest;
+use Nyholm\Psr7\Uri;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -20,17 +20,24 @@ class RequestBuilder
      */
     public static function buildPsr7Request(array $apiGatewayEvent): ServerRequestInterface
     {
-        //TODO build _SERVER superglobal wannabe and pass them rest of required things
-        //TODO build full Uri object with host and stuff
+        $uri = (new Uri())
+            ->withPath($apiGatewayEvent['path'])
+            ->withPort($apiGatewayEvent['headers']['X-Forwarded-Port'])
+            ->withScheme($apiGatewayEvent['headers']['X-Forwarded-Proto'])
+            ->withHost($apiGatewayEvent['headers']['Host']);
+
+        $body = $apiGatewayEvent['body'];
+        if ($apiGatewayEvent['isBase64Encoded']) {
+            $body = base64_decode($body, true);
+        }
 
         $request = new ServerRequest(
             $apiGatewayEvent['httpMethod'],
-            $apiGatewayEvent['path'],
+            $uri,
             $apiGatewayEvent['headers'],
-            $apiGatewayEvent['body'],
+            $body,
             $apiGatewayEvent['requestContext']['protocol']
         );
-
 
         $unifiedQueryParameters = array_merge(
             $apiGatewayEvent['multiValueQueryStringParameters'] ?? [],
