@@ -13,13 +13,15 @@ class InitializationException extends \Error
     /**
      * Thrown when passed something else than FunctionInterface or Closure as a handler.
      * @param mixed $type
+     * @param string $file
      * @return InitializationException
      */
-    public static function invalidFunctionPassed($type)
+    public static function invalidFunctionPassed($type, $file)
     {
         return new self(
             sprintf(
-                'Invalid function passed! Function passed to Phuntime must be Closure or FunctionInterface, %s passed',
+                'File %s should return instanceof FunctionInterface or Closure, %s returned',
+                $file,
                 gettype($type)
             )
         );
