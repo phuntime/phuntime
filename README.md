@@ -8,6 +8,8 @@ There are two ways of integrating your app with Phuntime:
 
 ### Closure Based
 
+Create a closure in your handler file:
+
 ```php
 <?php
 return function (\Nyholm\Psr7\ServerRequest $request) {
@@ -16,6 +18,8 @@ return function (\Nyholm\Psr7\ServerRequest $request) {
 };
 
 ```
+
+*This solution supports only HTTP Events so far.* Other events and Logger cannot is not passed to your task.
 
 ### ``FunctionInterface``
 Create your instance of ``FunctionInterface`` and return them to Phuntime. This class will be called every time when any 
