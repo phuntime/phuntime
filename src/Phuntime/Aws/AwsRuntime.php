@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface as HttpClientResponseInterface;
 
 /**
  * @see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html
@@ -51,12 +52,13 @@ class AwsRuntime implements RuntimeInterface
      */
     public function getNextRequest(): object
     {
-        [$contentBody, $headers] = $this->request('GET', 'invocation/next');
-        $content = json_decode($contentBody, true);
+        $requestData = $this->request('GET', 'invocation/next');
+        $content = $requestData->toArray(false);
+        $headers = $requestData->getHeaders(false);
 
         if ($this->classifier->isApiGatewayProxyEvent($content)) {
             //This is the only place we have headers from Lambda runtime, so we need to add request id here
-            $requestId = $headers['lambda-runtime-aws-request-id'];
+            $requestId = $headers['lambda-runtime-aws-request-id'][0];
             return RequestBuilder::buildPsr7Request($content)
                 ->withAttribute('REQUEST_ID', $requestId);
         }
@@ -74,9 +76,16 @@ class AwsRuntime implements RuntimeInterface
     {
         $proxyResult = [
             'statusCode' => $response->getStatusCode(),
-            'multiValueHeaders' => $response->getHeaders(),
             'body' => (string)$response->getBody()
         ];
+
+        $headers = $response->getHeaders();
+
+        //API Gateway expects to receive a array<string, array|string> or "empty" JSON object in this field
+        //Does not like empty arrays passed here and it will throw "Malformed Lambda proxy response" error
+        if(count($headers) > 0) {
+            $proxyResult['multiValueHeaders'] = $headers;
+        }
 
         $this->request('POST', 'invocation/' . $requestId . '/response', json_encode($proxyResult), 'application/json');
     }
@@ -157,9 +166,8 @@ class AwsRuntime implements RuntimeInterface
         return $self;
     }
 
-    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): array
+    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): HttpClientResponseInterface
     {
-        //normalize HTTP Method
         $method = strtoupper($method);
 
         $url = sprintf(
@@ -168,52 +176,11 @@ class AwsRuntime implements RuntimeInterface
             $path
         );
 
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $headers = [];
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION,
-            function ($curl, $header) use (&$headers) {
-                $len = strlen($header);
-                $explodedHeader = explode(':', $header, 2);
-                if (count($explodedHeader) !== 2) {
-                    return $len;
-                }
-                list($name, $value) = $explodedHeader;
-                if (empty($value)) {
-                    return $len;
-                }
-
-                $name = strtolower(trim($name));
-                if (array_key_exists($name, $headers) === false) {
-                    $headers[$name] = trim($value);
-                } else {
-                    if (!is_array($headers[$name])) {
-                        $headers[$name] = array($headers[$name]);
-                    }
-                    $headers[$name][] = trim($value);
-                }
-
-                return $len;
-
-            }
-        );
-
-        if ($method == 'POST') {
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Length: ' . strlen($body),
-                'Content-Type: ' . $contentType,
-            ]);
-        }
-
-        $result = curl_exec($ch);
-        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        return [$result, $headers];
+        return $this->httpClient->request($method, $url, [
+            'body' => $body,
+            'headers' => [
+                'Content-Type' => $contentType
+            ],
+        ]);
     }
 }
