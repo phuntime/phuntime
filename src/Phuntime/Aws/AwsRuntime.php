@@ -8,6 +8,8 @@ use Phuntime\Core\ContextInterface;
 use Phuntime\Core\RuntimeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html
@@ -30,6 +32,11 @@ class AwsRuntime implements RuntimeInterface
      * @var EventClassifier
      */
     protected EventClassifier $classifier;
+
+    /**
+     * @var HttpClientInterface
+     */
+    protected HttpClientInterface $httpClient;
 
     /**
      * @return LoggerInterface
@@ -145,6 +152,7 @@ class AwsRuntime implements RuntimeInterface
         $self->context = AwsContext::fromArray($_ENV);
         $self->logger = new AwsLogger();
         $self->classifier = new EventClassifier();
+        $self->httpClient = HttpClient::create();
 
         return $self;
     }
