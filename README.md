@@ -110,7 +110,7 @@ To prevent code completion issues, exclude given directories:
 
 All commands must be run from project root.
 
-**make & docker & linux/osx required.**.
+**make & docker & linux/osx/anything that can handle all makefile instructions required.**.
 
 ### AWS:
 
