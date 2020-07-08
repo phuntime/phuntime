@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Phuntime\App;
 
 
-use Phuntime\Core\FunctionHandler\HttpFoundationFunctionInterface;
+use Phuntime\Core\FunctionHandler\FunctionInterface;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  */
-class MyFunction implements HttpFoundationFunctionInterface
+class MyFunction implements FunctionInterface
 {
 
     /**
@@ -28,10 +31,6 @@ class MyFunction implements HttpFoundationFunctionInterface
         // TODO: Implement boot() method.
     }
 
-    public function handle(Request $request): Response
-    {
-        return new Response('this is a test');
-    }
 
     /**
      * @inheritDoc
@@ -39,5 +38,10 @@ class MyFunction implements HttpFoundationFunctionInterface
     public function setLogger(LoggerInterface $logger)
     {
         // TODO: Implement setLogger() method.
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+       return new \Nyholm\Psr7\Response(200, [], 'im working!');
     }
 }
