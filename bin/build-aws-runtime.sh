@@ -1,4 +1,4 @@
-#
+#!/usr/bin/env bash
 # build-aws-runtime.sh
 # Builds AWS Lambda Compliant runtime
 #
