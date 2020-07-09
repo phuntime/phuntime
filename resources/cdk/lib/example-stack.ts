@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as apigateway from "@aws-cdk/aws-apigateway";
+import {LambdaIntegration} from "@aws-cdk/aws-apigateway";
 
 export class ExampleStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -16,9 +17,9 @@ export class ExampleStack extends cdk.Stack {
              * A directory passed here must have a given structure:
              *
              * - /bootstrap - executable file
-             * - /bin/php - compiled PHP Executable
+             * - /bin/php - compiled PHP dir
              */
-            code: lambda.Code.fromAsset('phuntime-build')
+            code: lambda.Code.fromAsset('runtime')
         })
 
         /**
@@ -48,14 +49,26 @@ export class ExampleStack extends cdk.Stack {
 
         helloFunction.addLayers(phpRuntimeLayer);
 
-        const lambdaGateway = new apigateway.LambdaRestApi(this, 'HelloGateway', {
-            handler: helloFunction,
-            deployOptions: {
-                loggingLevel: apigateway.MethodLoggingLevel.INFO,
-                dataTraceEnabled: false
-            }
 
+        const helloFpmFunction = new lambda.Function(this, 'HelloFpmFunction', {
+            runtime: lambda.Runtime.PROVIDED,
+            code: lambda.Code.fromAsset('./../fpm-function'),
+            /**
+             * In case of FPM based runtime, this handler will be passed as script filename to php-fpm
+             */
+            handler: 'public/index.php',
+            timeout: cdk.Duration.seconds(30)
         });
+
+        helloFpmFunction.addLayers(phpRuntimeLayer);
+
+        const helloIntegration = new LambdaIntegration(helloFunction, {proxy: true});
+        const helloFpmIntegration = new LambdaIntegration(helloFpmFunction, {proxy: true});
+
+
+        const lambdaGateway = new apigateway.RestApi(this, 'TestGateway');
+        lambdaGateway.root.addResource('default').addMethod('GET', helloIntegration);
+        lambdaGateway.root.addResource('fpm').addMethod('GET', helloFpmIntegration);
 
         /**
          * These two parameters are required for passing $_GET and $_POST data to function
