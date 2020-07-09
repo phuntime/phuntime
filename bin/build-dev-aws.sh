@@ -8,7 +8,8 @@ echo $CONTAINER_ID
 
 printf "Checking PHP version\n"
 docker exec -it $CONTAINER_ID /opt/php/bin/php -v
-
+printf "Checking Swoole version\n"
+docker exec -it $CONTAINER_ID /opt/php/bin/php -i | grep swoole
 printf "Building example runtime build dir\n"
 
 CDK_PROJECT_DIR=./../../resources/function
