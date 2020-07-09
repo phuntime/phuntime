@@ -10,8 +10,9 @@ RUN yum install openssl-devel libcurl-devel glibc zlib tar gzip cmake texinfo ma
 
 #where we are building things
 ENV BUILD_DIR="/tmp/build"
-#path to php.ini
+
 ENV INI_FILE_LOCATION="/opt/php/lib/php.ini"
+ENV FPM_CONF_LOCATION="/opt/php/etc/php-fpm.conf"
 
 ENV BISON_VERSION="3.4"
 ENV PHP_VERSION="7.4.8"
@@ -55,11 +56,14 @@ RUN /opt/php/bin/php -v
 # add php binaries to PATH
 ENV PATH="/opt/php/bin:/opt/php/sbin:${PATH}"
 
+# add php-fpm config
+COPY ./php-fpm.conf ${FPM_CONF_LOCATION}
+
 # install swoole
 WORKDIR ${BUILD_DIR}
 RUN curl -sL https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/swoole-src-${SWOOLE_VERSION}
 RUN phpize && ./configure && make && make install
 RUN echo "extension=swoole.so" >> ${INI_FILE_LOCATION}
-#check for swoole
-RUN /opt/php/bin/php -i | grep swoole
+
+
