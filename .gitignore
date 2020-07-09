@@ -2,7 +2,7 @@
 /vendor/
 /composer.lock
 
-resources/cdk/phuntime-build
+resources/cdk/runtime
 resources/cdk/*.js
 resources/cdk/!jest.config.js
 resources/cdk/*.d.ts
