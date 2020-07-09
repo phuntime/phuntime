@@ -2,6 +2,11 @@
 <?php
 declare(strict_types=1);
 
+$taskVendorPath = getenv('LAMBDA_TASK_ROOT') . '/vendor/autoload.php';
+if(!file_exists($taskVendorPath)) {
+    echo 'ERROR: There is no vendor dir in your task root! Please run composer install and deploy your function once again!';
+    die(1);
+}
 
 /**
  * Include vendors.
@@ -10,7 +15,7 @@ declare(strict_types=1);
  *
  * @noinspection PhpIncludeInspection
  */
-require_once getenv('LAMBDA_TASK_ROOT') . '/vendor/autoload.php';
+require_once $taskVendorPath;
 
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
 $handler = \Phuntime\Core\Handler::fromRuntime($runtime);
