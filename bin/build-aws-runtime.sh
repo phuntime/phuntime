@@ -33,9 +33,11 @@ docker exec -it $CONTAINER_ID /opt/php/bin/php -i | grep swoole
 
 # shellcheck disable=SC2059
 printf "[build-aws-runtime] Copying artifacts to ${RUNTIME_DIR}\n"
-mkdir -p $RUNTIME_DIR/bin
+#mkdir -p $RUNTIME_DIR/bin
+rm -rf $RUNTIME_DIR/bin/php
 docker cp $CONTAINER_ID:/opt/php $RUNTIME_DIR/bin/php
-cp ./bootstrap $RUNTIME_DIR/bootstrap
+
+cp ./runtime/aws/bootstrap $RUNTIME_DIR/bootstrap
 
 chmod +x $RUNTIME_DIR/bootstrap
 chmod +x $RUNTIME_DIR/bin/php/bin/php
