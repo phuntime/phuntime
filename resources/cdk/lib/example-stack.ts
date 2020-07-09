@@ -35,7 +35,7 @@ export class ExampleStack extends cdk.Stack {
              * When dot (".") passed, CDK will zip your current project directory
              * (in this case, whole /resources/function will be passed to AWS)
              */
-            code: lambda.Code.fromAsset('./../function'),
+            code: lambda.Code.fromAsset('./function'),
             /**
              * Path to file which returns function definition object (see README.md for details)
              * Must be relative to directory passed in "code" property. '.php' suffix required.
@@ -52,7 +52,7 @@ export class ExampleStack extends cdk.Stack {
 
         const helloFpmFunction = new lambda.Function(this, 'HelloFpmFunction', {
             runtime: lambda.Runtime.PROVIDED,
-            code: lambda.Code.fromAsset('./../fpm-function'),
+            code: lambda.Code.fromAsset('./fpm-function'),
             /**
              * In case of FPM based runtime, this handler will be passed as script filename to php-fpm
              */
