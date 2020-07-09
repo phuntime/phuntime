@@ -4,5 +4,5 @@ build-aws-dev:
 
 #build and deploy development AWS runtime
 deploy-aws-dev:
-	cd resources/cdk && cdk deploy --verbose --require-approval never
+	cd resources/cdk && cdk deploy --force --verbose --require-approval never
 
