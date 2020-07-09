@@ -36,13 +36,11 @@ rm -rf $DEST_DIR/src/Phuntime/Local
 #i havent successfully configured composer to allow install package inside itself
 cp ./composer.json $DEST_DIR/composer.json
 cp ./composer.lock $DEST_DIR/composer.lock
-mkdir -p $DEST_DIR/src/Phuntime/Core
-cp -r ./src/Phuntime/Core $DEST_DIR/src/Phuntime/Core
+mkdir -p $DEST_DIR/src/Phuntime
+cp -r ./src/Phuntime/Core $DEST_DIR/src/Phuntime
 #let's face it , other providers are not so heavily required here
-mkdir -p $DEST_DIR/src/Phuntime/Aws
-cp -r ./src/Phuntime/Aws $DEST_DIR/src/Phuntime/Aws
-mkdir -p $DEST_DIR/src/Phuntime/Aws
-cp -r ./src/Phuntime/Local $DEST_DIR/src/Phuntime/Local
+cp -r ./src/Phuntime/Aws $DEST_DIR/src/Phuntime
+cp -r ./src/Phuntime/Local $DEST_DIR/src/Phuntime
 
 printf "[build-test-function] Installing fresh prod vendors to destination path\n"
 cd $DEST_DIR && composer install --no-dev
