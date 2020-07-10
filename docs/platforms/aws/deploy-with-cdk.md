@@ -6,7 +6,7 @@
 ## phuntime-fpm deployment
 
 
-````
+````ts
 import * as cdk from '@aws-cdk/core';
 import * as lambda from "@aws-cdk/aws-lambda";
 
@@ -15,6 +15,12 @@ export class MyAppStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
+
+        const phpRuntimeLayer = lambda.LayerVersion.fromLayerVersionArn(
+            this, 
+            'PHPRuntimeLayer', 
+            'arn:aws:lambda:<YOUR REGION>:XXXXXXX:layer:phuntime-fpm-X.X.X:version' //pass the ARN of given lambda here
+        );
 
         const fpmFunction = new lambda.Function(this, 'NameOfYourFpmFunctionHere', {
             /**
@@ -46,6 +52,11 @@ export class MyAppStack extends cdk.Stack {
              */
             timeout: cdk.Duration.seconds(30)
         });
+
+        
+        fpmFunction.addLayers(phpRuntimeLayer);
+
+
 
         //@TODO: integration with API Gateway
     }
