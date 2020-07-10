@@ -90,13 +90,11 @@ dev-server you can just refresh your page to reload your changes.
 ### Tools used for local dev/CI
 
 - [Docker](https://www.docker.com/) - for building PHP and runtime environments
-- [LocalStack](https://github.com/localstack/localstack) - A fully functional local AWS cloud stack
 - [Serverless Framework](https://www.serverless.com/) - With some offline plugins for development/CI 
 
 Which one will be used for CI - *Research needed*
 
-### AWS Runtime testing & Development:
-- [AWS CDK](https://aws.amazon.com/cdk/) - For test function deployment
+
 
 ### For PhpStorm users:
 
