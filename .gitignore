@@ -2,22 +2,12 @@
 /vendor/
 /composer.lock
 
-resources/cdk/runtime
-resources/cdk/*.js
-resources/cdk/!jest.config.js
-resources/cdk/*.d.ts
-resources/cdk/node_modules
-# CDK asset staging directory
-resources/cdk/.cdk.staging
-resources/cdk/cdk.out
-# Parcel build directories
-resources/cdk/.cache
-resources/cdk/.build
+
+/build
+
 resources/function/composer.lock
 resources/function/composer.json
 resources/function/vendor
 resources/function/src/Phuntime/Core
 resources/function/src/Phuntime/Aws
 resources/function/src/Phuntime/Local
-resources/cdk/function/
-resources/cdk/fpm-function/
