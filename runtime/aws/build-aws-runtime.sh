@@ -15,13 +15,11 @@ else
 fi
 
 
-# shellcheck disable=SC2059
-printf "[build-aws-runtime] Switched PWD to $(pwd)\n"
 
 docker build -t="phuntime-lambda-build" .
 CONTAINER_ID=$(docker run -it -d phuntime-lambda-build:latest)
 
-cd ../..
+
 # shellcheck disable=SC2059
 printf "[build-aws-runtime] Switched PWD to $(pwd)\n"
 
