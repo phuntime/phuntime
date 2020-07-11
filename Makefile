@@ -2,7 +2,9 @@
 build-aws-dev:
 	./bin/build-dev-aws.sh
 
-#build and deploy development AWS runtime
-deploy-aws-dev:
-	cd resources/cdk && cdk deploy --force --verbose --require-approval never
 
+build-sam-runtimes:
+	sam build RuntimeLayer
+
+run-aws-local:
+	SAM_CLI_TELEMETRY=0 sam --debug local start-api
