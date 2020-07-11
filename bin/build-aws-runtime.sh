@@ -35,7 +35,8 @@ docker exec -it $CONTAINER_ID /opt/php/bin/php -i | grep swoole
 printf "[build-aws-runtime] Copying artifacts to ${RUNTIME_DIR}\n"
 #mkdir -p $RUNTIME_DIR/bin
 rm -rf $RUNTIME_DIR/bin/php
-docker cp $CONTAINER_ID:/opt/php $RUNTIME_DIR/bin/php
+mkdir -p $RUNTIME_DIR/bin/php
+docker cp $CONTAINER_ID:/opt/php $RUNTIME_DIR/bin
 
 cp ./runtime/aws/bootstrap $RUNTIME_DIR/bootstrap
 
