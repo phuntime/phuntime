@@ -11,17 +11,12 @@ if [[ -z "${PHT_RUNTIME_DIR}" ]]; then
 else
   RUNTIME_DIR="${PHT_RUNTIME_DIR}"
   # shellcheck disable=SC2059
-  printf "[build-aws-runtime] Result will be dumped to $(pwd)/${RUNTIME_DIR}\n"
+  printf "[build-aws-runtime] Result will be dumped to ${RUNTIME_DIR}\n"
 fi
-
 
 
 docker build -t="phuntime-lambda-build" .
 CONTAINER_ID=$(docker run -it -d phuntime-lambda-build:latest)
-
-
-# shellcheck disable=SC2059
-printf "[build-aws-runtime] Switched PWD to $(pwd)\n"
 
 printf "[build-aws-runtime] Checking PHP version\n"
 docker exec -it $CONTAINER_ID /opt/php/bin/php -v
@@ -35,7 +30,7 @@ printf "[build-aws-runtime] Copying artifacts to ${RUNTIME_DIR}\n"
 rm -rf $RUNTIME_DIR/bin/php
 mkdir -p $RUNTIME_DIR/bin/php
 docker cp $CONTAINER_ID:/opt/php $RUNTIME_DIR/bin
-
+cp bootstrap $RUNTIME_DIR
 
 
 chmod +x $RUNTIME_DIR/bootstrap
