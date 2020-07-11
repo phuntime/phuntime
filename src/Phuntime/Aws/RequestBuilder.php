@@ -36,7 +36,7 @@ class RequestBuilder
             $uri,
             $apiGatewayEvent['headers'],
             $body,
-            $apiGatewayEvent['requestContext']['protocol']
+            $apiGatewayEvent['requestContext']['protocol'] ?? '1.1'
         );
 
         $unifiedQueryParameters = array_merge(
