@@ -14,7 +14,7 @@ else
   printf "[build-aws-runtime] Result will be dumped to $(pwd)/${RUNTIME_DIR}\n"
 fi
 
-cd ./runtime/aws || exit 1
+
 # shellcheck disable=SC2059
 printf "[build-aws-runtime] Switched PWD to $(pwd)\n"
 
@@ -38,7 +38,7 @@ rm -rf $RUNTIME_DIR/bin/php
 mkdir -p $RUNTIME_DIR/bin/php
 docker cp $CONTAINER_ID:/opt/php $RUNTIME_DIR/bin
 
-cp ./runtime/aws/bootstrap $RUNTIME_DIR/bootstrap
+
 
 chmod +x $RUNTIME_DIR/bootstrap
 chmod +x $RUNTIME_DIR/bin/php/bin/php
