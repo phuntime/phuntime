@@ -1,0 +1,10 @@
+CONTAINER_ID=''
+#alias function for AWS SAM
+build-RuntimeLayer: build-runtime
+
+
+build-runtime:
+ifndef ARTIFACTS_DIR
+	$(error ARTIFACTS_DIR is undefined)
+endif
+	PHT_RUNTIME_DIR=$(ARTIFACTS_DIR) ./build-aws-runtime.sh
