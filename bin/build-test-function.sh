@@ -26,7 +26,7 @@ fi
 printf "[build-test-function] Copying sources to new location\n"
 rm -rf $DEST_DIR
 mkdir -p $DEST_DIR
-cp -r $SOURCE_DIR $DEST_DIR
+cp -r $SOURCE_DIR $DEST_DIR/..
 
 printf "[build-test-function] Copying phuntime files to new location\n"
 #i havent successfully configured composer to allow install package inside itself
