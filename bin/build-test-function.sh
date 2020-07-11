@@ -25,14 +25,10 @@ fi
 
 printf "[build-test-function] Copying sources to new location\n"
 rm -rf $DEST_DIR
+mkdir -p $DEST_DIR
 cp -r $SOURCE_DIR $DEST_DIR
 
 printf "[build-test-function] Copying phuntime files to new location\n"
-rm -rf $DEST_DIR/src/Phuntime/Core
-rm -rf $DEST_DIR/src/Phuntime/Aws
-rm -rf $DEST_DIR/src/Phuntime/Local
-
-
 #i havent successfully configured composer to allow install package inside itself
 cp ./composer.json $DEST_DIR/composer.json
 cp ./composer.lock $DEST_DIR/composer.lock
