@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  RuntimeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: shared-layer
+      ContentUri: ./runtime/aws
+      CompatibleRuntimes:
+        - provided
+    Metadata:
+      BuildMethod: makefile
+  PhuntimeFpmFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 512
+      Timeout: 10
+      Handler: public/index.php
+      Runtime: provided
+      CodeUri: ./build/fpm-function
+      Layers:
+        - !Ref RuntimeLayer
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /fpm/{proxy+}
+            Method: any
+  PhuntimeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 512
+      Timeout: 10
+      Handler: .phuntime.php
+      Runtime: provided
+      CodeUri: ./build/function
+      Layers:
+        - !Ref RuntimeLayer
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /default/{proxy+}
+            Method: any
