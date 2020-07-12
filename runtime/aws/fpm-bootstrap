@@ -1,0 +1,24 @@
+#!/opt/bin/php/bin/php
+<?php
+declare(strict_types=1);
+
+/**
+ * @noinspection PhpIncludeInspection
+ */
+require_once __DIR__.'/vendor/autoload.php';
+
+$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
+$function = new \Phuntime\Core\FunctionHandler\FpmHandler();
+$handler = \Phuntime\Core\Handler::fromRuntime($runtime, $function);
+
+try {
+    $handler->boot();
+} catch (\Throwable $exception) {
+    $runtime->handleInitializationException($exception);
+    return 1;
+}
+
+while (true) {
+    $request = $runtime->getNextRequest();
+    $handler->handleEvent($request);
+}
