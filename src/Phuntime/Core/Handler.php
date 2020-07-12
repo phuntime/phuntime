@@ -56,14 +56,15 @@ class Handler
 
     /**
      * @param RuntimeInterface $runtime
+     * @param FunctionInterface|null $function
      * @return self
      */
-    public static function fromRuntime(RuntimeInterface $runtime): self
+    public static function fromRuntime(RuntimeInterface $runtime, ?FunctionInterface $function = null): self
     {
         return new self(
             $runtime,
             $runtime->getContext(),
-            null
+            $function
         );
     }
 
