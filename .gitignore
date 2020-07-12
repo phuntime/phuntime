@@ -11,3 +11,4 @@ resources/function/vendor
 resources/function/src/Phuntime/Core
 resources/function/src/Phuntime/Aws
 resources/function/src/Phuntime/Local
+/.aws-sam/
