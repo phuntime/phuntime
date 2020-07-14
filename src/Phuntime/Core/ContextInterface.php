@@ -9,6 +9,7 @@ use Phuntime\Core\FunctionHandler\FunctionInterface;
 interface ContextInterface
 {
     /**
+     * @deprecated - this should be a member of RuntimeConfiguration class. Context should be used for platform-dependent thing.
      * @psalm-return \Phuntime\Core\FunctionHandler\Psr7FunctionInterface
      */
     public function getFunction(): FunctionInterface;
