@@ -6,6 +6,7 @@ printf "[build-dev-aws] Building runtime dir\n"
 rm -rf ./build/aws-runtime
 mkdir -p ./build/aws-runtime
 (cd ./runtime/aws &&  ARTIFACTS_DIR=$(pwd)/../../build/aws-runtime make build-runtime)
+(cd ./runtime/aws &&  ARTIFACTS_DIR=$(pwd)/../../build/aws-fpm-runtime make build-fpm-runtime)
 
 SOURCE_DIR=./resources/fpm-function DEST_DIR=./build/fpm-function ./bin/build-test-function.sh
 SOURCE_DIR=./resources/function DEST_DIR=./build/function ./bin/build-test-function.sh
@@ -14,6 +15,7 @@ printf "[build-dev-aws] Zipping artifacts\n"
 (cd build/fpm-function && zip -r ../fpm-function.zip .)
 (cd build/function && zip -r ../function.zip .)
 (cd build/aws-runtime && zip -r ../aws-runtime.zip .)
+(cd build/aws-fpm-runtime && zip -r ../aws-fpm-runtime.zip .)
 
 
 printf "Done.\n"
