@@ -60,7 +60,7 @@ if [ "$FPM_BUILD" -eq 1 ]; then
   cp fpm-bootstrap $RUNTIME_DIR/bootstrap
 fi
 
-#chmod +x $RUNTIME_DIR/bootstrap
-#chmod +x $RUNTIME_DIR/bin/php/bin/php
+chmod +x $RUNTIME_DIR/bootstrap
+chmod +x $RUNTIME_DIR/bin/php/bin/php
 
 printf "[build-aws-runtime] Build DONE\n"
