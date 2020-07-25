@@ -19,7 +19,7 @@ Resources:
       Runtime: provided
       CodeUri: ./build/fpm-function
       Layers:
-        - !Ref RuntimeLayer
+        - !Ref FpmRuntimeLayer
       Events:
         Api:
           Type: Api
