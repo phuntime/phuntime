@@ -13,3 +13,7 @@ run-aws-local:
 # When functions are built, symlink contents inst
 build-symlinks:
 	./bin/make-symlinks.sh
+
+# AWS SAM CLI will run makefile from project root, so its required to alias all build methods here
+build-FpmRuntimeLayer:
+	cd ./runtime/aws && make build-fpm-runtime
