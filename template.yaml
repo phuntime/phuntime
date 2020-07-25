@@ -2,9 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Resources:
   RuntimeLayer:
-    Type: AWS::Serverless::LayerVersion
+    Type: AWS::Lambda::LayerVersion
     Properties:
-      LayerName: shared-layer
+      ContentUri: ./runtime/aws
+      CompatibleRuntimes:
+        - provided
+    Metadata:
+      BuildMethod: makefile
+  FpmRuntimeLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
       ContentUri: ./runtime/aws
       CompatibleRuntimes:
         - provided
@@ -17,7 +24,7 @@ Resources:
       Timeout: 10
       Handler: public/index.php
       Runtime: provided
-      CodeUri: ./build/fpm-function
+      CodeUri: ./resources/fpm-function
       Layers:
         - !Ref FpmRuntimeLayer
       Events:
@@ -33,7 +40,7 @@ Resources:
       Timeout: 10
       Handler: .phuntime.php
       Runtime: provided
-      CodeUri: ./build/function
+      CodeUri: ./resources/function
       Layers:
         - !Ref RuntimeLayer
       Events:
