@@ -18,3 +18,5 @@ build-symlinks:
 # Its kinda weird for me that its required only for layers, maybe i done somethinf wrong?
 build-FpmRuntimeLayer:
 	cd ./runtime/aws && make build-fpm-runtime
+build-RuntimeLayer:
+	cd ./runtime/aws && make build-runtime
