@@ -4,8 +4,7 @@ build-aws-dev:
 
 
 build-sam-runtimes:
-	sam build RuntimeLayer
-	sam build FpmRuntimeLayer
+	sam build
 
 run-aws-local:
 	SAM_CLI_TELEMETRY=0 sam --debug local start-api
