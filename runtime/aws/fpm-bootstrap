@@ -8,7 +8,7 @@ declare(strict_types=1);
 require_once __DIR__.'/vendor/autoload.php';
 
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
-$function = new \Phuntime\Core\FunctionHandler\FpmHandler();
+$function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext());
 $handler = \Phuntime\Core\Handler::fromRuntime($runtime, $function);
 
 try {
