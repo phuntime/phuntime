@@ -1,3 +1,6 @@
+build-RuntimeLayer: build-runtime
+build-FpmRuntimeLayer: build-fpm-runtime
+
 build-runtime:
 ifndef ARTIFACTS_DIR
 	$(error ARTIFACTS_DIR is undefined)
