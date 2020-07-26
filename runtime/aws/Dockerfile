@@ -46,7 +46,8 @@ RUN ./configure --prefix=/opt/php/ \
     --with-curl \
     --with-zlib \
     --disable-short-tags \
-    --without-pear
+    --without-pear \
+    --with-readline
 
 RUN make -j $(nproc) && make install
 
