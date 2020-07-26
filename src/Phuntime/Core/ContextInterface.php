@@ -19,4 +19,10 @@ interface ContextInterface
      * @return string|int|array
      */
     public function getParameter(string $key);
+
+    /**
+     * Returns absolute path to function handler
+     * @return string
+     */
+    public function getHandlerPath(): string;
 }
