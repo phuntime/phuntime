@@ -4,7 +4,7 @@ build-aws-dev:
 
 
 build-sam-runtimes:
-	sam build
+	_PWD=$(shell pwd) sam build
 
 run-aws-local:
 	SAM_CLI_TELEMETRY=0 sam --debug local start-api
