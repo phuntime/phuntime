@@ -56,4 +56,16 @@ class AwsContext implements ContextInterface
 
         return $this->parameters[$key];
     }
+
+    /**
+     * @return string
+     */
+    public function getHandlerPath(): string
+    {
+        return sprintf(
+            '%s/%s',
+            $this->getParameter('LAMBDA_TASK_ROOT'),
+            $this->getParameter('_HANDLER')
+        );
+    }
 }
