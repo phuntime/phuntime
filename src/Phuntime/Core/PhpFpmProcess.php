@@ -42,9 +42,8 @@ class PhpFpmProcess
                 self::FPM_EXECUTABLE_PATH,
                 '--force-stderr'
             ]);
+            $this->process->start();
         }
-
-        $this->process->start();
     }
 
     protected function stop() {

@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Phuntime\Core\FunctionHandler;
 
 
+use Nyholm\Psr7\Response;
+use Nyholm\Psr7\Stream;
+use Phuntime\Core\ContextInterface;
 use Phuntime\Core\PhpFpmProcess;
 use Phuntime\Core\RuntimeConfiguration;
 use Psr\Http\Message\ResponseInterface;
@@ -29,11 +32,14 @@ class FpmHandler implements FunctionInterface
      */
     protected Client $fastCgiClient;
 
+    protected ContextInterface $context;
+
     /**
      * FpmHandler constructor.
      */
-    public function __construct()
+    public function __construct(ContextInterface $context)
     {
+        $this->context = $context;
         $this->process = new PhpFpmProcess();
         $this->fastCgiClient = new Client(
             '127.0.0.1',
@@ -43,6 +49,7 @@ class FpmHandler implements FunctionInterface
 
     public function handleEvent(object $event)
     {
+
 
     }
 
@@ -55,6 +62,24 @@ class FpmHandler implements FunctionInterface
     {
         $this->process->start();
         $request = new HttpRequest();
+        $request
+            ->withScriptFilename($this->context->getHandlerPath())
+            ->withMethod($request->getMethod())
+            ->withBody($request->getBody())
+            ->withHeaders($request->getHeaders())
+            ->withUri($request->getRequestUri());
+
+
+        $fpmResponse = $this->fastCgiClient->execute($request);
+        $response = new Response();
+
+        return $response
+            ->withStatus($fpmResponse->getStatusCode())
+            ->withBody(
+                Stream::create(
+                    $fpmResponse->getBody()
+                )
+            );
 
     }
 
