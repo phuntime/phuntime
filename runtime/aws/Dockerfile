@@ -6,7 +6,7 @@ FROM amazonlinux:2018.03
 # Update packages and install needed compilation dependencies
 RUN yum update -y
 RUN yum clean all
-RUN yum install openssl-devel libcurl-devel glibc zlib tar gzip cmake texinfo makeinfo help2man autoconf gcc gcc-c++ libcurl-devel libxml2-devel re2c sqlite-devel -y
+RUN yum install readline-devel openssl-devel libcurl-devel glibc zlib tar gzip cmake texinfo makeinfo help2man autoconf gcc gcc-c++ libcurl-devel libxml2-devel re2c sqlite-devel -y
 
 #where we are building things
 ENV BUILD_DIR="/tmp/build"
