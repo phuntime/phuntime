@@ -37,13 +37,7 @@ class PhpFpmProcess
      */
     public function start()
     {
-        if($this->process === null) {
-            $this->process = new Process([
-                self::FPM_EXECUTABLE_PATH,
-                '--force-stderr'
-            ]);
-            $this->process->start();
-        }
+        shell_exec('/opt/bin/php-fpm --force-stderr --daemonize --fpm-config /opt/php/php-fpm.conf');
     }
 
     protected function stop() {
