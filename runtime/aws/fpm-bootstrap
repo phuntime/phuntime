@@ -1,4 +1,4 @@
-#!/opt/bin/php/bin/php
+#!/opt/bin/php
 <?php
 declare(strict_types=1);
 
@@ -7,18 +7,22 @@ declare(strict_types=1);
  */
 require_once __DIR__.'/vendor/autoload.php';
 
-$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
-$function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext());
-$handler = \Phuntime\Core\Handler::fromRuntime($runtime, $function);
+Co\run(function() {
+    $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
+    $function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext());
+    $handler = \Phuntime\Core\Handler::fromRuntime($runtime, $function);
 
-try {
-    $handler->boot();
-} catch (\Throwable $exception) {
-    $runtime->handleInitializationException($exception);
+    try {
+        $handler->boot();
+    } catch (\Throwable $exception) {
+        $runtime->handleInitializationException($exception);
+        return 1;
+    }
+
+    while (true) {
+        $request = $runtime->getNextRequest();
+        $handler->handleEvent($request);
+    }
+
     return 1;
-}
-
-while (true) {
-    $request = $runtime->getNextRequest();
-    $handler->handleEvent($request);
-}
+});
