@@ -22,7 +22,7 @@ class PhpFpmProcess
      * Where is PID File located?
      * @var string
      */
-    private const PID_FILE_PATH = '/opt/php/lib/php.ini';
+    private const PID_FILE_PATH = '/tmp/php-fpm.pid';
 
     /**
      * Where is php-fpm executable located?
