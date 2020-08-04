@@ -5,6 +5,7 @@ namespace Phuntime\Core\FunctionHandler;
 
 
 use Closure;
+use Phuntime\Core\RuntimeConfiguration;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -64,5 +65,10 @@ class WrappedClosureHandler implements FunctionInterface
     public function setLogger(LoggerInterface $logger)
     {
         return;
+    }
+
+    public function getRuntimeConfiguration(): RuntimeConfiguration
+    {
+        // TODO: Implement getRuntimeConfiguration() method.
     }
 }
