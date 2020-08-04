@@ -37,10 +37,14 @@ class PhpFpmProcess
      */
     public function start()
     {
-        shell_exec('/opt/bin/php-fpm --force-stderr --daemonize --fpm-config /opt/php/php-fpm.conf');
+        shell_exec(sprintf(
+            '%s --force-stderr --daemonize --fpm-config /opt/php/php-fpm.conf',
+            self::FPM_EXECUTABLE_PATH
+        ));
     }
 
-    protected function stop() {
+    protected function stop()
+    {
 
     }
 }
