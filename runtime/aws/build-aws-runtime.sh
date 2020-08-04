@@ -30,7 +30,7 @@ printf "[build-aws-runtime] Copying artifacts to ${RUNTIME_DIR}\n"
 rm -rf $RUNTIME_DIR/bin/php
 mkdir -p $RUNTIME_DIR/bin/php
 mkdir -p $RUNTIME_DIR/php/lib
-docker cp $CONTAINER_ID:/opt/php $RUNTIME_DIR/bin
+docker cp $CONTAINER_ID:/opt/php/ext $RUNTIME_DIR/php/ext
 docker cp $CONTAINER_ID:/opt/php/lib/php.ini $RUNTIME_DIR/php/lib/php.ini
 cp bootstrap $RUNTIME_DIR
 
