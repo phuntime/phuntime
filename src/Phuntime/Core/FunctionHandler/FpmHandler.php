@@ -73,6 +73,10 @@ class FpmHandler implements FunctionInterface
         $fpmResponse = $this->fastCgiClient->execute($request);
         $response = new Response();
 
+        foreach ($fpmResponse->getHeaders() as $headerName => $headerValue) {
+            $response = $response->withHeader($headerName, $headerValue);
+        }
+
         return $response
             ->withStatus($fpmResponse->getStatusCode())
             ->withBody(
