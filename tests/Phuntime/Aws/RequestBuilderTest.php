@@ -60,4 +60,22 @@ class RequestBuilderTest extends TestCase
         $request = RequestBuilder::buildPsr7Request($apiGatewayEvent);
         $this->assertEquals('{"test":"body"}', (string)$request->getBody());
     }
+
+    public function testMultipleQueryParametersMerging()
+    {
+        $this->markTestSkipped('This is not potentially an issue, as i found this only on AWS SAM, not on Lambda');
+        $event = $this->getApiGatewayEvent(3);
+        $request = RequestBuilder::buildPsr7Request($event);
+
+        $queryStringParams = $request->getQueryParams();
+
+        $expected = [
+            'bool' => '',
+            'single' => 'qwert',
+            'mult' => ['miki', 'miki2']
+        ];
+
+        $this->assertEquals($expected, $queryStringParams);
+
+    }
 }
