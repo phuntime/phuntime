@@ -15,7 +15,7 @@ ENV INI_FILE_LOCATION="/opt/php/lib/php.ini"
 ENV FPM_CONF_LOCATION="/opt/php/etc/php-fpm.conf"
 
 ENV BISON_VERSION="3.4"
-ENV PHP_VERSION="7.4.8"
+ENV PHP_VERSION="7.4.7"
 ENV SWOOLE_VERSION="4.5.2"
 
 #start in root
@@ -40,14 +40,15 @@ WORKDIR ${BUILD_DIR}
 RUN curl -sL https://github.com/php/php-src/archive/php-${PHP_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/php-src-php-${PHP_VERSION}
 RUN ./buildconf --force
-RUN ./configure --prefix=/opt/php/ \
+RUN EXTENSION_DIR=/opt/php/ext ./configure --prefix=/opt/php \
     --enable-fpm \
     --with-openssl \
     --with-curl \
     --with-zlib \
     --disable-short-tags \
     --without-pear \
-    --with-readline
+    --with-readline \
+    --with-config-file-path=/opt/php
 
 RUN make -j $(nproc) && make install
 
