@@ -44,6 +44,20 @@ class RequestBuilder
             $apiGatewayEvent['queryStringParameters'] ?? []
         );
 
+        /**
+         * AWS SAM passes multi value Query string parameters with a "[]" suffix, we need to remove it.
+         * @TODO verify that this situation should happen on "production" AWS Lambda
+         * @see tests/fixtures/aws-apigateway-event-3.json for example from Gateway
+         */
+        foreach ($unifiedQueryParameters as $queryParameterKey => $unifiedQueryParameter) {
+            if (str_ends_with($queryParameterKey, '[]')) {
+                unset($unifiedQueryParameters[$queryParameterKey]);
+                $newKey = substr($queryParameterKey, 0, -2);
+                $unifiedQueryParameters[$newKey] = $unifiedQueryParameter;
+            }
+        }
+
+
         $request = $request->withQueryParams($unifiedQueryParameters);
 
         return $request;
