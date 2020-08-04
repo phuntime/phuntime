@@ -28,7 +28,7 @@ class PhpFpmProcess
      * Where is php-fpm executable located?
      * @var string
      */
-    private const FPM_EXECUTABLE_PATH = '/opt/bin/php/sbin/php-fpm';
+    private const FPM_EXECUTABLE_PATH = '/opt/bin/php-fpm';
 
     protected ?Process $process = null;
 
