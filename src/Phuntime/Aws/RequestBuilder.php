@@ -39,22 +39,34 @@ class RequestBuilder
             $apiGatewayEvent['requestContext']['protocol'] ?? '1.1'
         );
 
-        $unifiedQueryParameters = array_merge(
-            $apiGatewayEvent['multiValueQueryStringParameters'] ?? [],
-            $apiGatewayEvent['queryStringParameters'] ?? []
-        );
+
+        $unifiedQueryParameters = [];
+        $multiValueQueryParams = $apiGatewayEvent['multiValueQueryStringParameters'] ?? [];
+        $singleQueryParams = $apiGatewayEvent['queryStringParameters'] ?? [];
 
         /**
-         * AWS SAM passes multi value Query string parameters with a "[]" suffix, we need to remove it.
-         * @TODO verify that this situation should happen on "production" AWS Lambda
-         * @see tests/fixtures/aws-apigateway-event-3.json for example from Gateway
+         * Merge and normalize multi value query parameters with single one
+         * @see tests/fixtures/aws-apigateway-event-1.json for example from Gateway
          */
-        foreach ($unifiedQueryParameters as $queryParameterKey => $unifiedQueryParameter) {
-            if (str_ends_with($queryParameterKey, '[]')) {
-                unset($unifiedQueryParameters[$queryParameterKey]);
-                $newKey = substr($queryParameterKey, 0, -2);
-                $unifiedQueryParameters[$newKey] = $unifiedQueryParameter;
+        foreach ($singleQueryParams as $queryParameterKey => $unifiedQueryParameter) {
+            $singleElement = $singleQueryParams[$queryParameterKey];
+            $multiElement = $multiValueQueryParams[$queryParameterKey];
+            $keyEndsWithBrackets = str_ends_with($queryParameterKey, '[]');
+
+            /**
+             * QS Argument is single, no need to tweaks
+             */
+            if (count($multiElement) === 1 && !$keyEndsWithBrackets) {
+                $unifiedQueryParameters[$queryParameterKey] = $singleElement;
+                continue;
             }
+
+            /**
+             * In this case, query parameter is multi-value and got "[]" suffix
+             * its required to trim them to comply with eg. $_GET output
+             */
+            $newKey = substr($queryParameterKey, 0, -2);
+            $unifiedQueryParameters[$newKey] = $multiElement;
         }
 
 
