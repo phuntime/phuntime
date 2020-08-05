@@ -63,6 +63,7 @@ class FpmHandler implements FunctionInterface
         $this->process->start();
         $httpRequest = new HttpRequest();
         $httpRequest
+            ->withContentType($request->getHeader('Content-Type')[0])
             ->withQueryString(http_build_query($request->getQueryParams()))
             ->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
