@@ -5,13 +5,14 @@
   "httpMethod": "POST",
   "isBase64Encoded": true,
   "queryStringParameters": {
-    "foo": "bar"
+    "foo": "bar",
+    "choice[]": "bentley"
   },
   "multiValueQueryStringParameters": {
     "foo": [
       "bar"
     ],
-    "choice": [
+    "choice[]": [
       "beamer",
       "benz",
       "bentley"
