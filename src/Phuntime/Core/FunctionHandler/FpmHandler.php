@@ -61,16 +61,19 @@ class FpmHandler implements FunctionInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->process->start();
-        $request = new HttpRequest();
-        $request
+        $httpRequest = new HttpRequest();
+        $httpRequest
+            ->withQueryString(http_build_query($request->getQueryParams()))
             ->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
-            ->withBody($request->getBody())
-            ->withHeaders($request->getHeaders())
-            ->withUri($request->getRequestUri());
+            ->withBody((string)$request->getBody());
+
+        foreach ($request->getHeaders() as $psrHeaderKey => $headerValues) {
+            $httpRequest = $httpRequest->withHeader($psrHeaderKey, reset($headerValues));
+        }
 
 
-        $fpmResponse = $this->fastCgiClient->execute($request);
+        $fpmResponse = $this->fastCgiClient->execute($httpRequest);
         $response = new Response();
 
         foreach ($fpmResponse->getHeaders() as $headerName => $headerValue) {
