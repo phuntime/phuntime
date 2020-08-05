@@ -63,7 +63,6 @@ class RequestBuilderTest extends TestCase
 
     public function testMultipleQueryParametersMerging()
     {
-        $this->markTestSkipped('This is not potentially an issue, as i found this only on AWS SAM, not on Lambda');
         $event = $this->getApiGatewayEvent(3);
         $request = RequestBuilder::buildPsr7Request($event);
 
