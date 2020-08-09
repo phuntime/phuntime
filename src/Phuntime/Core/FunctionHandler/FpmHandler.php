@@ -60,14 +60,20 @@ class FpmHandler implements FunctionInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $contentType = $request->getHeader('Content-Type')[0];
         $this->process->start();
+
         $httpRequest = new HttpRequest();
         $httpRequest
-            ->withContentType($request->getHeader('Content-Type')[0])
+            ->withRequestUri($request->getUri()->getPath())
             ->withQueryString(http_build_query($request->getQueryParams()))
             ->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
             ->withBody((string)$request->getBody());
+
+        if($contentType !== null) {
+            $httpRequest = $httpRequest->withContentType($contentType);
+        }
 
         foreach ($request->getHeaders() as $psrHeaderKey => $headerValues) {
             $httpRequest = $httpRequest->withHeader($psrHeaderKey, reset($headerValues));
