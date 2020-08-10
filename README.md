@@ -3,51 +3,49 @@
 Deploy your apps to FaaS platforms quickly.
 
 
-
-### Unit Tests
-
-``vendor/bin/phpunit``
-
-### Psalm static analysis
-
-``vendor/bin/psalm``
-
-
-### Tools used for local dev/CI
-
-- [Docker](https://www.docker.com/) - for building PHP and runtime environments
-- [Serverless Framework](https://www.serverless.com/) - With some offline plugins for development/CI 
-
-Which one will be used for CI - *Research needed*
-
-
-
-### For PhpStorm users:
-
-To prevent code completion issues, exclude given directories:
-- resources/cdk/cdk.out
-- resources/function/vendor
-- resources/function/src/Phuntime/Aws
-- resources/function/src/Phuntime/Core
-
-## Building runtimes
+## Development related things
 
 All commands must be run from project root.
 
-**make & docker & linux/osx/anything that can handle all makefile instructions required.**.
+**make & docker & linux/osx/anything that can handle all makefile instructions required for builds & development.**
 
-### AWS:
-
-dev build:
+### AWS runtimes & functions
 
 ``make build-aws-dev``
 
-dev deploy:
+This command builds all AWS Lambda runtimes and test functions which can be deployed to AWS. 
 
-``make deploy-aws-dev``
+___
+``make build-sam-runtimes``
 
-You can combine them into a simple one-liner to build & deploy with a single click:
+The same as above, but this one is dedicated for AWS SAM. Builds runtimes and test functions which can be tested locally. 
 
-``make build-aws-dev && make deploy-aws-dev``
+--- 
+``make run-aws-local``
+
+Runs AWS SAM which allows you to test your builds. 
+**``make build-sam-runtimes`` must be called before this one.** 
+
+### Run Unit Tests
+
+``vendor/bin/phpunit``
+
+### Run Psalm static analysis
+
+``vendor/bin/psalm``
+
+### 3rd party tools used during development
+
+- [Docker](https://www.docker.com/) - Handles PHP building and running AWS SAM
+- [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) - 
+Provides local environment for local development and debugging
+
+### For PhpStorm users:
+
+To prevent code completion issues, exclude given directories (paths relative to repository root):
+- .aws-sam
+- build
+
+
 
 
