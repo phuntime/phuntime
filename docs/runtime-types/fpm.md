@@ -9,12 +9,12 @@ configuration file - see docs/configuration-file.md for details.
 
 ## Caveats && things you potentially find useful
 
-- Only HTTP Event are passed to php-fpm. Any event passed to your Event Dispatcher will be running in separate process,
-not in PHP-FPM one. 
-- You do not have to download phuntime vendors in your app to return RuntimeConfiguration objects - you can return a 
-array filled with config nodes and values, and phuntime will convert them to configuration object automatically;
+- Only HTTP Event are passed to php-fpm. The rest of them will be ignored so far. 
+- You do not have to download phuntime vendors to your app - this runtime type requires no additional configuration. Just 
+pass phuntime-fpm as a one of your layers and voila.
 
 ## Use Cases
 
+- WordPress, eZ Platform 
 - "I just want to deploy my app on Lambda"
 
