@@ -36,6 +36,7 @@ cp php.ini $RUNTIME_DIR/bin
 cp php-fpm.conf $RUNTIME_DIR/php
 
 chmod +x $RUNTIME_DIR/bootstrap
-chmod +x $RUNTIME_DIR/bin/php/bin/php
+chmod +x $RUNTIME_DIR/bin/php
+chmod +x $RUNTIME_DIR/bin/php-fpm
 
 printf "[build-aws-runtime] Build DONE\n"
