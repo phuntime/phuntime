@@ -1,3 +1,4 @@
+#aliases for AWS SAM build process
 build-RuntimeLayer: build-runtime
 build-FpmRuntimeLayer: build-fpm-runtime
 
