@@ -6,12 +6,12 @@ namespace Phuntime\Core\FunctionHandler;
 use Phuntime\Core\RuntimeConfiguration;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerAwareInterface;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
+ * @license MIT
  */
-interface FunctionInterface extends LoggerAwareInterface
+interface FunctionInterface
 {
     /**
      * @param object $event
