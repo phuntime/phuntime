@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Phuntime\Core;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
 /**
@@ -19,12 +20,6 @@ class PhpFpmProcess
     public const LISTEN_PORT = 9901;
 
     /**
-     * Where is PID File located?
-     * @var string
-     */
-    private const PID_FILE_PATH = '/tmp/php-fpm.pid';
-
-    /**
      * Where is php-fpm executable located?
      * @var string
      */
@@ -37,6 +32,13 @@ class PhpFpmProcess
 
     private array $pipes = [];
 
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function start()
     {
         /**
@@ -45,6 +47,8 @@ class PhpFpmProcess
         if($this->process !== null) {
             return;
         }
+
+        $this->logger->info('Starting up PHP-FPM.');
 
         /**
          * pipes used to share logs from FPM to phuntime
@@ -67,11 +71,13 @@ class PhpFpmProcess
             $this->pipes
         );
 
+        $this->logger->debug('Setting fpm process pipes non-blocking.');
         /**
          * Do not wait for logs from FPM, just continue if nothing passed
          * It must be before the while loop otherwise it would be hard to determine that process is running.
          */
         stream_set_blocking($this->pipes[2], false);
+
 
         /**
          * proc_open() only can tell if process is running, but this does not mean it can handle connections
@@ -79,13 +85,15 @@ class PhpFpmProcess
          */
         $isReady = false;
         $readyPhraseToCatch = 'ready to handle connections';
+        $this->logger->debug('Waiting for fpm to be ready.');
+
         while ($isReady === false) {
-            $logs = (string) $this->popFpmLogs();
+            $logs = $this->popFpmLogs();
+            $this->logFpmLogs($logs);
             $isReady = stripos($logs, $readyPhraseToCatch) !== false;
         }
-        error_log('php-fpm ready');
 
-        $this->tick();
+        $this->logger->info('FPM is ready for handling requests.');
     }
 
 
@@ -105,7 +113,7 @@ class PhpFpmProcess
     {
         $status = proc_get_status($this->process);
         if(!$status['running']) {
-            error_log('php-fpm stopped running for some reason');
+            $this->logger->warning('php-fpm stopped running for some reason!');
             //@TODO maybe throw an exception here?
         }
     }
@@ -116,10 +124,18 @@ class PhpFpmProcess
         $logs = $this->popFpmLogs();
 
         if($logs !== null) {
-            error_log($logs);
+            $this->logFpmLogs($logs);
         }
     }
 
+    protected function logFpmLogs(string $logs): void
+    {
+        if($logs === '') {
+            return;
+        }
+
+        $this->logger->info(sprintf('FPM stdout: %s', $logs));
+    }
     protected function stop()
     {
 
