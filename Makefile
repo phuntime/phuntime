@@ -9,11 +9,14 @@ build-aws-dev:
 
 
 build-sam-runtimes:
-	_PWD=$(shell pwd) sam build
+	_PWD=$(shell pwd) sam --debug build
 
 run-aws-local:
 	SAM_CLI_TELEMETRY=0 sam --debug local start-api
 
-# When functions are built, symlink contents inst
-build-symlinks:
-	./bin/make-symlinks.sh
+#
+# Removes all build artifacts and cached contents.
+#
+cleanup:
+	rm -rf ./.aws-sam
+	rm -rf ./build
