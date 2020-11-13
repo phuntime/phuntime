@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
- * AWS Lambda allows to log to stdout and stderr, so we will use stdout for all messages and stderr for some serious issues
+ * Allows to pass logs from runtime to CloudWatch.
  *
  * @see https://docs.aws.amazon.com/lambda/latest/dg/python-logging.html
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -107,7 +107,7 @@ class AwsLogger implements LoggerInterface
     {
         $message = $this->interpolate($message, $context);
 
-        fwrite($this->stdout, $message.PHP_EOL);
+        fwrite($this->stdout, sprintf('[%s] %s %s', $level, $message, PHP_EOL));
     }
 
     /**
