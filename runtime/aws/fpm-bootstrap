@@ -2,14 +2,18 @@
 <?php
 declare(strict_types=1);
 
+use Phuntime\Core\PhpFpmProcess;
+
 /**
  * @noinspection PhpIncludeInspection
  */
-
-use Phuntime\Core\PhpFpmProcess;
-
 require_once __DIR__.'/vendor/autoload.php';
 
+/**
+ * FPM requests are handled by using Swoole Coroutine FastCGI Client
+ * (@see https://www.swoole.co.uk/docs/modules/swoole-coroutine-fastcgi-client)
+ * To make it work properly, we need to run our code in coroutine.
+ */
 Co\run(function() {
     $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
     $logger = $runtime->getLogger();
@@ -25,6 +29,9 @@ Co\run(function() {
         return 1;
     }
 
+    /**
+     * All events received by AWS Lambda are received and handled here.
+     */
     while (true) {
         $request = $runtime->getNextRequest();
         $handler->handleEvent($request);
