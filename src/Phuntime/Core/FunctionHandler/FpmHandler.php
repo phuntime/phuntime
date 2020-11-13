@@ -62,6 +62,7 @@ class FpmHandler implements FunctionInterface
             ->withBody((string)$request->getBody());
 
         if($contentType !== null) {
+            $this->logger->debug(sprintf('Setting content type to "%s".', $contentType));
             $httpRequest = $httpRequest->withContentType($contentType);
         }
 
@@ -71,6 +72,7 @@ class FpmHandler implements FunctionInterface
 
 
         $fpmResponse = $this->fastCgiClient->execute($httpRequest);
+        $this->logger->debug(sprintf('Response from FPM: HTTP %s, ', $fpmResponse->getStatusCode()));
         $response = new Response();
 
         foreach ($fpmResponse->getHeaders() as $headerName => $headerValue) {
