@@ -16,12 +16,6 @@ use Psr\Log\LogLevel;
  */
 class AwsLogger implements LoggerInterface
 {
-
-    /**
-     * @var string
-     */
-    private const ERROR_STREAM = 'php://stderr';
-
     /**
      * @var string
      */
@@ -34,18 +28,11 @@ class AwsLogger implements LoggerInterface
     protected $stdout;
 
     /**
-     * For error and higher
-     * @var resource
-     */
-    protected $stderr;
-
-    /**
      * AwsLogger constructor.
      */
     public function __construct()
     {
         $this->stdout = fopen(self::STANDARD_STREAM, 'a');
-        $this->stderr = fopen(self::ERROR_STREAM, 'a');
 
     }
 
@@ -120,11 +107,7 @@ class AwsLogger implements LoggerInterface
     {
         $message = $this->interpolate($message, $context);
 
-        fwrite($this->stdout, $message);
-
-        if ($this->isErrorOrHigher($message)) {
-            fwrite($this->stderr, $message);
-        }
+        fwrite($this->stdout, $message.PHP_EOL);
     }
 
     /**
@@ -142,28 +125,4 @@ class AwsLogger implements LoggerInterface
         return $message;
     }
 
-    /**
-     * @param string $level
-     * @return bool
-     */
-    protected function isErrorOrHigher(string $level): bool
-    {
-        if ($level === LogLevel::EMERGENCY) {
-            return true;
-        }
-
-        if ($level === LogLevel::ALERT) {
-            return true;
-        }
-
-        if ($level === LogLevel::CRITICAL) {
-            return true;
-        }
-
-        if ($level === LogLevel::ERROR) {
-            return true;
-        }
-
-        return false;
-    }
 }
