@@ -22,14 +22,6 @@ use Swoole\FastCGI\HttpRequest;
  */
 class FpmHandler implements FunctionInterface
 {
-    /**
-     * @var PhpFpmProcess
-     */
-    protected PhpFpmProcess $process;
-
-    /**
-     * @var Client
-     */
     protected Client $fastCgiClient;
 
     protected ContextInterface $context;
