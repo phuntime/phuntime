@@ -12,7 +12,8 @@ require_once __DIR__.'/vendor/autoload.php';
 
 Co\run(function() {
     $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
-    $function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext());
+    $logger = $runtime->getLogger();
+    $function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext(), $logger);
     $handler = \Phuntime\Core\Handler::fromRuntime($runtime, $function);
     $fpmProcess = new PhpFpmProcess();
 
