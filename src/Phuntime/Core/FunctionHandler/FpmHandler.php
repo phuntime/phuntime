@@ -26,16 +26,17 @@ class FpmHandler implements FunctionInterface
 
     protected ContextInterface $context;
 
-    /**
-     * FpmHandler constructor.
-     */
-    public function __construct(ContextInterface $context)
+    protected LoggerInterface $logger;
+
+    public function __construct(ContextInterface $context, LoggerInterface $logger)
     {
         $this->context = $context;
         $this->fastCgiClient = new Client(
             '127.0.0.1',
             PhpFpmProcess::LISTEN_PORT
         );
+
+        $this->logger = $logger;
     }
 
     public function handleEvent(object $event)
@@ -83,12 +84,6 @@ class FpmHandler implements FunctionInterface
                     $fpmResponse->getBody()
                 )
             );
-
-    }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        // TODO: Implement setLogger() method.
     }
 
     public function getRuntimeConfiguration(): RuntimeConfiguration
