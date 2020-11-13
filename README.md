@@ -9,7 +9,7 @@ All commands must be run from project root.
 
 **make & docker & linux/osx/anything that can handle all makefile instructions required for builds & development.**
 
-### AWS runtimes & functions
+### Makefile instructions overview
 
 ``make build-aws-dev``
 
@@ -25,6 +25,10 @@ The same as above, but this one is dedicated for AWS SAM. Builds runtimes and te
 
 Runs AWS SAM which allows you to test your builds. 
 **``make build-sam-runtimes`` must be called before this one.** 
+--- 
+``make cleanup``
+
+Performs a cleanup and remove all build artifacts and cache from project directory.
 
 ### Run Unit Tests
 
