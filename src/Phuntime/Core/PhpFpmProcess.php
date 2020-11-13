@@ -30,17 +30,30 @@ class PhpFpmProcess
      */
     private const FPM_EXECUTABLE_PATH = '/opt/bin/php-fpm';
 
-    protected ?Process $process = null;
-
     /**
-     *
+     * @var resource
      */
+    private $process;
+
+    private array $pipes = [];
+
     public function start()
     {
-        shell_exec(sprintf(
-            '%s --force-stderr --daemonize --fpm-config /opt/php/php-fpm.conf',
-            self::FPM_EXECUTABLE_PATH
-        ));
+        $descriptors = [
+            0 => ['file', 'php://stdin', 'r'],
+            1 => ['file', 'php://stdout', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+
+        $this->process = proc_open(
+            sprintf(
+                '%s  --nodaemonize --fpm-config /opt/php/php-fpm.conf',
+                self::FPM_EXECUTABLE_PATH
+            ),
+            $descriptors,
+            $this->pipes
+        );
+        stream_set_blocking($this->pipes[2], false);
     }
 
     protected function stop()
