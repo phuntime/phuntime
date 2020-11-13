@@ -2,7 +2,7 @@ This directory contains all files required to build AWS Lambda Runtime Layer for
 
 
 ## Runtime Layer Directory Structure
-
+Built layer should have an directory structure as below:
 - `/opt/bin/php` - PHP Executable Binary
 - `/opt/bin/php-fpm` - PHP-FPM Executable Binary
 - `/opt/php/php.ini` - Default php.ini config file
