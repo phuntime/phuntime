@@ -40,7 +40,6 @@ class FpmHandler implements FunctionInterface
     public function __construct(ContextInterface $context)
     {
         $this->context = $context;
-        $this->process = new PhpFpmProcess();
         $this->fastCgiClient = new Client(
             '127.0.0.1',
             PhpFpmProcess::LISTEN_PORT
@@ -61,8 +60,6 @@ class FpmHandler implements FunctionInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $contentType = $request->getHeader('Content-Type')[0];
-        $this->process->start();
-
         $httpRequest = new HttpRequest();
         $httpRequest
             ->withRequestUri($request->getUri()->getPath())

@@ -5,15 +5,20 @@ declare(strict_types=1);
 /**
  * @noinspection PhpIncludeInspection
  */
+
+use Phuntime\Core\PhpFpmProcess;
+
 require_once __DIR__.'/vendor/autoload.php';
 
 Co\run(function() {
     $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
     $function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext());
     $handler = \Phuntime\Core\Handler::fromRuntime($runtime, $function);
+    $fpmProcess = new PhpFpmProcess();
 
     try {
         $handler->boot();
+        $fpmProcess->start();
     } catch (\Throwable $exception) {
         $runtime->handleInitializationException($exception);
         return 1;
@@ -22,6 +27,7 @@ Co\run(function() {
     while (true) {
         $request = $runtime->getNextRequest();
         $handler->handleEvent($request);
+        $fpmProcess->tick();
     }
 
     return 1;
