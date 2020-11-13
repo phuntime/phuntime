@@ -40,6 +40,13 @@ class PhpFpmProcess
     public function start()
     {
         /**
+         * no need to run process twice if running
+         */
+        if($this->process !== null) {
+            return;
+        }
+
+        /**
          * pipes used to share logs from FPM to phuntime
          */
         $descriptors = [
