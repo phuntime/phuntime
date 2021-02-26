@@ -18,12 +18,13 @@ fi
 docker build -t="phuntime-lambda-build" .
 CONTAINER_ID=$(docker run -it -d phuntime-lambda-build:latest)
 
-printf "[build-aws-runtime] Checking PHP version\n"
+printf "[build-aws-runtime] Checking PHP version START\n"
 docker exec -it $CONTAINER_ID /opt/php/bin/php -v
+printf "[build-aws-runtime] Checking PHP version STOP\n"
 
-printf "[build-aws-runtime] Checking Swoole version\n"
+printf "[build-aws-runtime] Checking Swoole version START\n"
 docker exec -it $CONTAINER_ID /opt/php/bin/php -i | grep swoole
-
+printf "[build-aws-runtime] Checking Swoole version STOP\n"
 # shellcheck disable=SC2059
 printf "[build-aws-runtime] Copying artifacts to ${RUNTIME_DIR}\n"
 mkdir -p $RUNTIME_DIR/bin
