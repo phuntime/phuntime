@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
+ * @deprecated potentially
  */
 interface FunctionInterface
 {

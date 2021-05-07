@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
+ * @deprecated potentially
  */
 class WrappedClosureHandler implements FunctionInterface
 {
