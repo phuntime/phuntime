@@ -6,7 +6,7 @@ namespace Phuntime\Aws;
 
 use PHPUnit\Framework\TestCase;
 
-class ErrorClassifierTest extends TestCase
+class EventClassifierTest extends TestCase
 {
 
     use AwsProvidersTrait;
