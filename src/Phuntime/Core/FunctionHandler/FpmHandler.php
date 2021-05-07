@@ -19,6 +19,7 @@ use Swoole\FastCGI\HttpRequest;
  * Creates a PHP-FPM process and forwards them all requests.
  * @package Phuntime\Core\FunctionHandler
  * @license MIT
+ * @deprecated potentially
  */
 class FpmHandler implements FunctionInterface
 {
