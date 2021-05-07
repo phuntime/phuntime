@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Phuntime\Core;
 
 use Phuntime\Core\FunctionHandler\FunctionInterface;
-use Phuntime\Core\FunctionHandler\HttpFoundationFunctionInterface;
-use Phuntime\Core\FunctionHandler\Psr7FunctionInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
@@ -14,7 +12,7 @@ use Throwable;
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
-class Handler
+class EventProcessor
 {
 
     /**

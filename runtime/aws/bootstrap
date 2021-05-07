@@ -18,7 +18,7 @@ if(!file_exists($taskVendorPath)) {
 require_once $taskVendorPath;
 
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
-$handler = \Phuntime\Core\Handler::fromRuntime($runtime);
+$handler = \Phuntime\Core\EventProcessor::fromRuntime($runtime);
 
 try {
     $handler->boot();
