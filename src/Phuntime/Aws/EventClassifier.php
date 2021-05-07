@@ -26,6 +26,10 @@ class EventClassifier
             return false;
         }
 
+        if(isset($eventBody['version']) && $eventBody['version'] !== '1.0') {
+            return false;
+        }
+
         return true;
     }
 
