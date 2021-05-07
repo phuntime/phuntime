@@ -24,11 +24,7 @@ interface RuntimeInterface
      */
     public function getLogger(): LoggerInterface;
 
-    /**
-     * Returns next request that has been received by server.
-     * @return object
-     */
-    public function getNextRequest(): object;
+    public function getNextEvent(): array;
 
     /**
      * @deprecated
@@ -36,7 +32,7 @@ interface RuntimeInterface
      * @param ResponseInterface $response
      * @return void
      */
-    public function respondToRequest(string $requestId, ResponseInterface $response): void;
+    public function respondToEvent(string $eventId, object $response): void;
 
     /**
      * @param \Throwable $exception
