@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Phuntime\Core;
+namespace Phuntime\Fpm;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Process\Process;
 
 /**
  * @package Phuntime\Core
