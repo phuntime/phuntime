@@ -5,21 +5,31 @@ namespace Phuntime\Aws;
 
 
 use PHPUnit\Framework\TestCase;
+use Phuntime\UnitTestHelper;
 
 class EventClassifierTest extends TestCase
 {
-
-    use AwsProvidersTrait;
-
-
-    /**
-     * @dataProvider apiGatewayEvents
-     * @param array $apiGatewayEvent
-     */
-    public function testApiGatewayClassification(array $apiGatewayEvent)
+    public function testThereWillBeApiGwV1Matched()
     {
+        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
         $classifier = new EventClassifier();
 
-        $this->assertTrue($classifier->isApiGatewayProxyEvent($apiGatewayEvent));
+        self::assertTrue($classifier->isApiGatewayV1ProxyEvent($payload));
+    }
+
+    public function testApiGwV1MatcherWillNotMatchV2()
+    {
+        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v2-event-1');
+        $classifier = new EventClassifier();
+
+        self::assertFalse($classifier->isApiGatewayV1ProxyEvent($payload));
+    }
+
+    public function testApiGwV2MatcherWillNotMatchV1()
+    {
+        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
+        $classifier = new EventClassifier();
+
+        self::assertFalse($classifier->isApiGatewayV2ProxyEvent($payload));
     }
 }
