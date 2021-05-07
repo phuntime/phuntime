@@ -16,7 +16,7 @@ class EventClassifier
      * @param array $eventBody
      * @return bool
      */
-    public function isApiGatewayProxyEvent(array $eventBody): bool
+    public function isApiGatewayV1ProxyEvent(array $eventBody): bool
     {
         if (!isset($eventBody['httpMethod'])) {
             return false;
