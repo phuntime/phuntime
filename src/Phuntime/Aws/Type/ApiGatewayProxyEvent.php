@@ -14,11 +14,13 @@ class ApiGatewayProxyEvent
 
     protected array $payload;
     protected string $httpVersion;
+    protected string $path;
 
     public static function fromArray(array $payload): self
     {
         $object = new static();
         $object->httpVersion = $payload['httpMethod'];
+        $object->path = $payload['path'];
 
         return $object;
     }
@@ -32,4 +34,10 @@ class ApiGatewayProxyEvent
     {
         return $this->httpVersion;
     }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
 }

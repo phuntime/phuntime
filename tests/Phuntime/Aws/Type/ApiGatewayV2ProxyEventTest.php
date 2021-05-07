@@ -24,4 +24,11 @@ class ApiGatewayV2ProxyEventTest extends TestCase
         $event = ApiGatewayV2ProxyEvent::fromArray($payload);
         self::assertSame('POST', $event->getHttpMethod());
     }
+
+    public function testHttpPath()
+    {
+        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v2-event-1');
+        $event = ApiGatewayV2ProxyEvent::fromArray($payload);
+        self::assertSame('/my/path2', $event->getPath());
+    }
 }
