@@ -46,7 +46,7 @@
     "domainPrefix": "id",
     "http": {
       "method": "POST",
-      "path": "/my/path",
+      "path": "/my/path2",
       "protocol": "HTTP/1.1",
       "sourceIp": "IP",
       "userAgent": "agent"

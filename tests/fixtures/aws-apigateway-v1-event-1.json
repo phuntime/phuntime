@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "resource": "/my/path",
-  "path": "/my/path",
+  "path": "/my/path1",
   "httpMethod": "GET",
   "headers": {
     "header1": "value1",
