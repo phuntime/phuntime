@@ -3,8 +3,17 @@ declare(strict_types=1);
 
 namespace Phuntime\Core\EventTransformer;
 
+use Phuntime\Core\Contract\EventInterface;
+
 interface EventTransformerInterface
 {
-    public function supports(array $payload): bool;
+    /**
+     * Processes object received from runtime and transforms them to some other
+     * @param EventInterface $object $object
+     * @return object
+     */
+    public function transformFromRuntime(EventInterface $object): object;
+
+    public function supports(object $event): bool;
 
 }
