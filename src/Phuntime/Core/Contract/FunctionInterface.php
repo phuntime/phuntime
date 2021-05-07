@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Phuntime\Core\Contract;
 
-use Phuntime\Core\Event\EventInterface;
-
 interface FunctionInterface
 {
     /**
