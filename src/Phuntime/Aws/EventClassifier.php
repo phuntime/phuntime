@@ -8,7 +8,6 @@ namespace Phuntime\Aws;
  * Detects which AWS Event we have to deal with.
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
- * @deprecated drop or refactor
  */
 class EventClassifier
 {
@@ -24,6 +23,19 @@ class EventClassifier
         }
 
         if (!array_key_exists('multiValueQueryStringParameters', $eventBody)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isApiGatewayV2ProxyEvent(array $eventBody): bool
+    {
+        if(isset($eventBody['version']) && $eventBody['version'] !== '2.0') {
+            return false;
+        }
+
+        if(!isset($eventBody['requestContext'])) {
             return false;
         }
 
