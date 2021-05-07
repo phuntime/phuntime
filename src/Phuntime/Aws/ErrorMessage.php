@@ -7,6 +7,7 @@ namespace Phuntime\Aws;
  * Object oriented representation of Lambda Runtime error
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
+ * @deprecated to be moved to jadob/typed-aws-lambda
  */
 class ErrorMessage
 {

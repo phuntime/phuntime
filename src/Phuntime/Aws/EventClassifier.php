@@ -7,7 +7,8 @@ namespace Phuntime\Aws;
 /**
  * Detects which AWS Event we have to deal with.
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
- * @license
+ * @license MIT
+ * @deprecated drop or refactor
  */
 class EventClassifier
 {

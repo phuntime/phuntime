@@ -31,6 +31,7 @@ interface RuntimeInterface
     public function getNextRequest(): object;
 
     /**
+     * @deprecated
      * @param string $requestId
      * @param ResponseInterface $response
      * @return void

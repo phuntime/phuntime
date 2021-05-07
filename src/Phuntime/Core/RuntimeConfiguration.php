@@ -4,6 +4,11 @@ declare(strict_types=1);
 namespace Phuntime\Core;
 
 
+/**
+ * @deprecated
+ * Class RuntimeConfiguration
+ * @package Phuntime\Core
+ */
 class RuntimeConfiguration
 {
     public const RUNTIME_TYPE_FPM = 'fpm';

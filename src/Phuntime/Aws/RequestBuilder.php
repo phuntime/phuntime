@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
+ * @deprecated to be refactored to some extension
  */
 class RequestBuilder
 {

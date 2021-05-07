@@ -13,6 +13,7 @@ use Psr\Http\Message\RequestInterface;
  * Exposes some features that probably would be repeated in any ContextInterface
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
+ * @deprecated - drop it, or refactor
  */
 trait ContextTrait
 {

@@ -15,6 +15,7 @@ class InitializationException extends \Error
      * @param mixed $type
      * @param string $file
      * @return InitializationException
+     * @deprecated to be dropped soon
      */
     public static function invalidFunctionPassed($type, $file)
     {
