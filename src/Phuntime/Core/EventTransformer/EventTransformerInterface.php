@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phuntime\Core\Event;
+namespace Phuntime\Core\EventTransformer;
 
 interface EventTransformerInterface
 {

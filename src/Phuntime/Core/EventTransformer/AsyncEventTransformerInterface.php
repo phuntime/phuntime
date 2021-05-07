@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phuntime\Core\Event;
+namespace Phuntime\Core\EventTransformer;
 
 /**
  * Used for processing asynchronous events that do not require any response to be set back to runtime.
