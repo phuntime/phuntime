@@ -42,7 +42,7 @@
         ]
       }
     },
-    "domainName": "id.execute-api.us-east-1.amazonaws.com",
+    "domainName": "id.execute-api.eu-central-1.amazonaws.com",
     "domainPrefix": "id",
     "http": {
       "method": "POST",

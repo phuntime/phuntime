@@ -30,4 +30,18 @@ class ApiGatewayProxyEventTest extends TestCase
         self::assertSame('/my/path1', $event->getPath());
     }
 
+    public function testHttpHost()
+    {
+        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
+        $event = ApiGatewayProxyEvent::fromArray($payload);
+        self::assertSame('id.execute-api.us-east-1.amazonaws.com', $event->getDomainName());
+    }
+
+    public function testEventIsNotAsync()
+    {
+        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
+        $event = ApiGatewayProxyEvent::fromArray($payload);
+        self::assertTrue($event->isAsync());
+    }
+
 }

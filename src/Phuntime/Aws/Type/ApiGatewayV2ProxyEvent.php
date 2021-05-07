@@ -16,6 +16,7 @@ class ApiGatewayV2ProxyEvent extends ApiGatewayProxyEvent
         $object = new static();
         $object->httpVersion = $payload['requestContext']['http']['method'];
         $object->path = $payload['requestContext']['http']['path'];
+        $object->domainName = $payload['requestContext']['domainName'];
 
         return $object;
     }
