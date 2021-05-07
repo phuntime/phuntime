@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phuntime\Core;
+namespace Phuntime\Core\Contract;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
