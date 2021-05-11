@@ -152,19 +152,18 @@ class AwsRuntime implements RuntimeInterface
     }
 
     /**
-     * Creates a new instance of AwsRuntime with all configuration taken from ennvironment variables
+     * Creates a new instance of AwsRuntime with all configuration taken from environment variables
+     * @param array $env - inject $_ENV here
      * @return static
      */
-    public static function fromEnvironment(): self
+    public static function fromEnvironment(array $env): self
     {
-        $self = new self();
-        $self->context = AwsContext::fromArray($_ENV);
+        $self = new self(
+            AwsContext::fromArray($env)
+        );
         $self->logger = new AwsLogger();
         $self->classifier = new EventClassifier();
-        $self->httpClient = HttpClient::create();
 
         return $self;
     }
-
-
 }
