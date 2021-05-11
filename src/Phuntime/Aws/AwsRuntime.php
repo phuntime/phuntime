@@ -166,21 +166,5 @@ class AwsRuntime implements RuntimeInterface
         return $self;
     }
 
-    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): HttpClientResponseInterface
-    {
-        $method = strtoupper($method);
 
-        $url = sprintf(
-            'http://%s/2018-06-01/runtime/%s',
-            $this->context->getParameter('AWS_LAMBDA_RUNTIME_API'),
-            $path
-        );
-
-        return $this->httpClient->request($method, $url, [
-            'body' => $body,
-            'headers' => [
-                'Content-Type' => $contentType
-            ],
-        ]);
-    }
 }
