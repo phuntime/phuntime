@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace Phuntime\Aws;
 
-
-use Phuntime\Core\ContextInterface;
 use Phuntime\Core\ContextTrait;
+use Phuntime\Core\Contract\ContextInterface;
 use Phuntime\Core\FunctionHandler\FunctionInterface;
 
 /**
@@ -17,16 +16,21 @@ class AwsContext implements ContextInterface
     use ContextTrait;
 
     /**
-     * @var array<string, string|int|array>
+     * @var array<string, string>
      */
     protected array $parameters = [];
 
+    protected function __construct() {}
+
     /**
      * @param array $parameters
-     * @return static
      */
     public static function fromArray(array $parameters = []): self
     {
+        if(!isset($parameters['AWS_LAMBDA_RUNTIME_API'])) {
+            throw new \RuntimeException('Missing AWS_LAMBDA_RUNTIME_API env!');
+        }
+
         $self = new self();
         $self->parameters = $parameters;
 
@@ -67,5 +71,10 @@ class AwsContext implements ContextInterface
             $this->getParameter('LAMBDA_TASK_ROOT'),
             $this->getParameter('_HANDLER')
         );
+    }
+
+    public function getRuntimeHost(): string
+    {
+        return $this->parameters['AWS_LAMBDA_RUNTIME_API'];
     }
 }
