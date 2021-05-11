@@ -34,10 +34,16 @@ class AwsRuntime implements RuntimeInterface
      */
     protected EventClassifier $classifier;
 
-    /**
-     * @var HttpClientInterface
-     */
-    protected HttpClientInterface $httpClient;
+    protected AwsRuntimeClient $runtimeClient;
+
+    public function __construct(
+        AwsContext $context,
+        ?AwsRuntimeClient $runtimeClient = null
+    )
+    {
+        $this->context = $context;
+        $this->runtimeClient = $runtimeClient ?? new AwsRuntimeClient($context->getRuntimeHost());
+    }
 
     /**
      * @return LoggerInterface
