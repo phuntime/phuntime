@@ -4,11 +4,14 @@ declare(strict_types=1);
 namespace Phuntime\Aws;
 
 use Phuntime\Aws\Type\ApiGatewayProxyEvent;
+use Phuntime\Aws\Type\ApiGatewayProxyResult;
 use Phuntime\Core\Contract\ContextInterface;
 use Phuntime\Core\Contract\RuntimeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface as HttpClientResponseInterface;
 
@@ -65,39 +68,21 @@ class AwsRuntime implements RuntimeInterface
             return ApiGatewayProxyEvent::fromArray($content);
         }
 
-        throw new \RuntimeException('Unsupported event received');
+        throw new RuntimeException('Unsupported event received');
     }
 
     /**
-     * All HTTP Responses must be converted to API Gateway Proxy Result
-     * @see https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-output-format
-     * @param string $requestId
-     * @param ResponseInterface $response
+     * @param string $eventId
+     * @param object $response
+     * @throws TransportExceptionInterface
      */
-    public function respondToRequest(string $requestId, ResponseInterface $response): void
+    public function respondToEvent(string $eventId, object $response): void
     {
-        $proxyResult = [
-            'statusCode' => $response->getStatusCode(),
-            'body' => (string)$response->getBody()
-        ];
-
-        $headers = $response->getHeaders();
-
-        //API Gateway expects to receive a array<string, array|string> or "empty" JSON object in this field
-        //Does not like empty arrays passed here and it will throw "Malformed Lambda proxy response" error
-        if(count($headers) > 0) {
-            $proxyResult['multiValueHeaders'] = $headers;
+        if(!($response instanceof ApiGatewayProxyResult)) {
+            throw new \InvalidArgumentException(sprintf('Unsupported event passed to %s', __METHOD__));
         }
 
-        $this->request('POST', 'invocation/' . $requestId . '/response', json_encode($proxyResult), 'application/json');
-    }
-
-    /**
-     * @return ContextInterface
-     */
-    public function getContext(): ContextInterface
-    {
-        return $this->context;
+        $this->runtimeClient->respondToEvent($eventId, $response->toArray());
     }
 
 
@@ -105,7 +90,7 @@ class AwsRuntime implements RuntimeInterface
      * Emits error occured during event handling
      * @param \Throwable $exception
      * @param string|null $requestId
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function handleInvocationError(\Throwable $exception, ?string $requestId = null): void
     {
