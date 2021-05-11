@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Phuntime\Aws;
 
-
-use Phuntime\Core\ContextInterface;
-use Phuntime\Core\RuntimeInterface;
+use Phuntime\Aws\Type\ApiGatewayProxyEvent;
+use Phuntime\Core\Contract\ContextInterface;
+use Phuntime\Core\Contract\RuntimeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
@@ -55,18 +55,14 @@ class AwsRuntime implements RuntimeInterface
 
     /**
      * @return object
+     * @throws TransportExceptionInterface
      */
-    public function getNextRequest(): object
+    public function getNextEvent(): object
     {
-        $requestData = $this->request('GET', 'invocation/next');
-        $content = $requestData->toArray(false);
-        $headers = $requestData->getHeaders(false);
+        list($content,) = $this->runtimeClient->getEvent();
 
-        if ($this->classifier->isApiGatewayProxyEvent($content)) {
-            //This is the only place we have headers from Lambda runtime, so we need to add request id here
-            $requestId = $headers['lambda-runtime-aws-request-id'][0];
-            return RequestBuilder::buildPsr7Request($content)
-                ->withAttribute('REQUEST_ID', $requestId);
+        if ($this->classifier->isApiGatewayV1ProxyEvent($content)) {
+            return ApiGatewayProxyEvent::fromArray($content);
         }
 
         throw new \RuntimeException('Unsupported event received');
