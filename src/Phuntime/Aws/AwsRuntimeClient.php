@@ -6,6 +6,10 @@ namespace Phuntime\Aws;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use function get_class;
+use function json_encode;
+use function sprintf;
+use function strtoupper;
 
 /**
  * Knows how to talk with Lambda Runtime and brings them responses to his requests.
@@ -82,4 +86,31 @@ class AwsRuntimeClient
         $this->request('POST', 'init/error', $output, 'application/json');
     }
 
+    /**
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function getEvent(): array
+    {
+        $request = $this->request('GET', 'invocation/next');
+
+        return [
+            $request->toArray(false),
+            $request->getHeaders(false)
+        ];
+
+    }
+
+    /**
+     * @param string $eventId
+     * @param array $payload
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function respondToEvent(string $eventId, array $payload): void
+    {
+        $this->request(
+            'POST',
+            sprintf('invocation/%s/response', $eventId),
+            json_encode($payload),
+            'application/json');
+    }
 }
