@@ -67,4 +67,19 @@ class AwsRuntimeClient
         $this->request('POST', 'invocation/' . $requestId . '/error', $output, 'application/json');
     }
 
+    /**
+     * @param \Throwable $throwable
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function handleInitializationException(\Throwable $throwable)
+    {
+        $output = [
+            'errorMessage' => sprintf('InitializationException Occured: "%s"', $throwable->getMessage()),
+            'errorType' => get_class($throwable)
+        ];
+
+        $output = json_encode($output);
+        $this->request('POST', 'init/error', $output, 'application/json');
+    }
+
 }

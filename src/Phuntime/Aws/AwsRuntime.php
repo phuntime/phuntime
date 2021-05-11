@@ -129,16 +129,11 @@ class AwsRuntime implements RuntimeInterface
 
     /**
      * @param \Throwable $throwable
+     * @throws TransportExceptionInterface
      */
     public function handleInitializationException(\Throwable $throwable)
     {
-        $output = [
-            'errorMessage' => sprintf('InitializationException Occured: "%s"', $throwable->getMessage()),
-            'errorType' => get_class($throwable)
-        ];
-
-        $output = json_encode($output);
-        $this->request('POST', 'init/error', $output, 'application/json');
+        $this->runtimeClient->handleInitializationException($throwable);
 
         //Also send to stderr
         $this->getLogger()->emergency(
