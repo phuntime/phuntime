@@ -51,4 +51,20 @@ class AwsRuntimeClient
         ]);
     }
 
+    /**
+     * @param \Throwable $exception
+     * @param string|null $requestId
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function handleInvocationError(\Throwable $exception, string $requestId = null): void
+    {
+        $output = [
+            'errorMessage' => sprintf('InvocationError Occured: "%s"', $exception->getMessage()),
+            'errorType' => get_class($exception)
+        ];
+
+        $output = json_encode($output);
+        $this->request('POST', 'invocation/' . $requestId . '/error', $output, 'application/json');
+    }
+
 }

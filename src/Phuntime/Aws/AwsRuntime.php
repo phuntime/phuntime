@@ -107,21 +107,15 @@ class AwsRuntime implements RuntimeInterface
 
     /**
      * Emits error occured during event handling
-     * @param string $requestId
-     * @param ErrorMessage $errorMessage
-     * @param array $stackTrace
+     * @param \Throwable $exception
+     * @param string|null $requestId
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     public function handleInvocationError(\Throwable $exception, ?string $requestId = null): void
     {
 
         if ($requestId !== null) {
-            $output = [
-                'errorMessage' => sprintf('InvocationError Occured: "%s"', $exception->getMessage()),
-                'errorType' => get_class($exception)
-            ];
-
-            $output = json_encode($output);
-            $this->request('POST', 'invocation/' . $requestId . '/error', $output, 'application/json');
+            $this->runtimeClient->handleInvocationError($exception, $requestId);
         }
 
         $this->getLogger()->critical(
