@@ -14,6 +14,11 @@ interface EventTransformerInterface
      */
     public function transformFromRuntime(EventInterface $object): object;
 
-    public function supports(object $event): bool;
+    /**
+     * @param object $from received from runtime
+     * @param string $to defined in function
+     * @return bool
+     */
+    public function supports(object $from, string $to): bool;
 
 }
