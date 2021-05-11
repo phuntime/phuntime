@@ -142,4 +142,9 @@ class AwsRuntime implements RuntimeInterface
 
         return $self;
     }
+
+    public function getContext(): ContextInterface
+    {
+        return $this->context;
+    }
 }
