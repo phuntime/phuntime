@@ -44,8 +44,8 @@ class ApiGatewayToHttpFoundationExtension implements SyncEventTransformerInterfa
         // TODO: Implement transformToRuntime() method.
     }
 
-    public function supports(object $event): bool
+    public function supports(object $from, string $to): bool
     {
-        return $event instanceof ApiGatewayProxyEvent;
+        return $from instanceof ApiGatewayProxyEvent && $to === Request::class;
     }
 }
