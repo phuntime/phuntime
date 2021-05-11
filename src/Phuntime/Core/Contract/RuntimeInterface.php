@@ -16,7 +16,7 @@ interface RuntimeInterface
 
     public function getLogger(): LoggerInterface;
 
-    public function getNextEvent(): array;
+    public function getNextEvent(): object;
 
     public function respondToEvent(string $eventId, object $response): void;
 
