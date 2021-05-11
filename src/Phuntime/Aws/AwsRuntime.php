@@ -110,7 +110,7 @@ class AwsRuntime implements RuntimeInterface
 
         if ($requestId !== null) {
             $output = [
-                'errorMessage' => sprintf('InvocationError Occured: "%s", see CloudWatch logs for details.', $exception->getMessage()),
+                'errorMessage' => sprintf('InvocationError Occured: "%s"', $exception->getMessage()),
                 'errorType' => get_class($exception)
             ];
 
@@ -133,7 +133,7 @@ class AwsRuntime implements RuntimeInterface
     public function handleInitializationException(\Throwable $throwable)
     {
         $output = [
-            'errorMessage' => sprintf('InitializationException Occured: "%s", see CloudWatch logs for details.', $throwable->getMessage()),
+            'errorMessage' => sprintf('InitializationException Occured: "%s"', $throwable->getMessage()),
             'errorType' => get_class($throwable)
         ];
 
