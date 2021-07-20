@@ -6,7 +6,7 @@ build-runtime:
 ifndef ARTIFACTS_DIR
 	$(error ARTIFACTS_DIR is undefined)
 endif
-	PHT_RUNTIME_DIR=$(ARTIFACTS_DIR) ./build-aws-runtime.sh
+	PHT_RUNTIME_DIR=$(ARTIFACTS_DIR) PHP_VERSION=8.0.7 ./build-aws-runtime.sh
 
 # ARTIFACTS_DIR = Where the files will be deployed
 # _PWD = Path to project root (AWS SAM are using tmp dir while building so its impossible to get phuntime files)

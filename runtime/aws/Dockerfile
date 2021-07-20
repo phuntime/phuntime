@@ -3,6 +3,10 @@ FROM amazonlinux:2018.03
 # AWS Lambda runs on Amazon Linux 2018, so all custom runtimes must be compiled on this version
 #
 
+ARG PHP_VERSION
+ARG BISON_VERSION
+ARG SWOOLE_VERSION
+
 # Update packages and install needed compilation dependencies
 RUN yum update -y
 RUN yum clean all
@@ -14,10 +18,6 @@ ENV BUILD_DIR="/tmp/build"
 ENV INI_FILE_LOCATION="/opt/php/lib/php.ini"
 ENV FPM_CONF_LOCATION="/opt/php/etc/php-fpm.conf"
 
-ENV BISON_VERSION="3.4"
-ENV PHP_VERSION="7.4.7"
-ENV SWOOLE_VERSION="4.5.2"
-
 #start in root
 WORKDIR ${BUILD_DIR}
 
@@ -25,7 +25,7 @@ WORKDIR ${BUILD_DIR}
 # bison 3.0.0 or later is required to generate PHP parsers
 # There is only 2.7 available in yum, so we need to install a fresh one manually
 #
-RUN curl -sL http://ftp.gnu.org/gnu/bison/bison-${BISON_VERSION}.tar.gz | tar -xvz
+RUN curl -vsL http://ftp.gnu.org/gnu/bison/bison-${BISON_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/bison-${BISON_VERSION}
 RUN ./configure && make && make install
 RUN ln -s /usr/local/bin/bison /usr/bin/bison
@@ -37,7 +37,7 @@ RUN bison --help
 WORKDIR ${BUILD_DIR}
 
 # Download the PHP source
-RUN curl -sL https://github.com/php/php-src/archive/php-${PHP_VERSION}.tar.gz | tar -xvz
+RUN curl -vsL https://github.com/php/php-src/archive/php-${PHP_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/php-src-php-${PHP_VERSION}
 RUN ./buildconf --force
 RUN EXTENSION_DIR=/opt/php/ext ./configure --prefix=/opt/php \
@@ -63,7 +63,7 @@ COPY ./php-fpm.conf ${FPM_CONF_LOCATION}
 
 # install swoole
 WORKDIR ${BUILD_DIR}
-RUN curl -sL https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
+RUN curl -vsL https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/swoole-src-${SWOOLE_VERSION}
 RUN phpize && ./configure && make && make install
 RUN echo "extension=swoole.so" >> ${INI_FILE_LOCATION}

@@ -8,15 +8,21 @@ printf "[build-aws-runtime] Build START\n"
 if [[ -z "${PHT_RUNTIME_DIR}" ]]; then
   printf "[build-aws-runtime] Missing PHT_RUNTIME_DIR env, aborting\n"
   exit 1
-else
-  RUNTIME_DIR="${PHT_RUNTIME_DIR}"
-  # shellcheck disable=SC2059
-  printf "[build-aws-runtime] Result will be dumped to ${RUNTIME_DIR}\n"
 fi
+
+if [[ -z "${PHP_VERSION}" ]]; then
+  printf "[build-aws-runtime] Missing PHP_VERSION env, aborting\n"
+  exit 1
+fi
+
+RUNTIME_DIR="${PHT_RUNTIME_DIR}"
+# shellcheck disable=SC2059
+printf "[build-aws-runtime] Result will be dumped to ${RUNTIME_DIR}\n"
+
 
 
 docker build -t="phuntime-lambda-build" .
-CONTAINER_ID=$(docker run -it -d phuntime-lambda-build:latest)
+CONTAINER_ID=$(docker run -it -d phuntime-lambda-build:latest --build-arg PHP_VERSION="${RUNTIME_DIR}")
 
 printf "[build-aws-runtime] Checking PHP version START\n"
 docker exec -it $CONTAINER_ID /opt/php/bin/php -v
