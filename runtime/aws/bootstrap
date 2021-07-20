@@ -2,22 +2,29 @@
 <?php
 declare(strict_types=1);
 
-$taskVendorPath = getenv('LAMBDA_TASK_ROOT') . '/vendor/autoload.php';
+$taskRootPath = getenv('LAMBDA_TASK_ROOT');
+
+if(!$taskRootPath) {
+    echo 'ERROR: THERE is no LAMBDA_TASK_ROOT env set! Please set it or deploy on SAM/Lambda to continue!';
+    exit(1);
+}
+
+$taskVendorPath = $taskRootPath . '/vendor/autoload.php';
 if(!file_exists($taskVendorPath)) {
     echo 'ERROR: There is no vendor dir in your task root! Please run composer install and deploy your function once again!';
-    die(1);
+    exit(1);
 }
 
 /**
  * Include vendors.
- * This is ridiculously important as we do not include phuntime in custom runtime, this library should be delivered
- * in task depedencies.
+ * This is ridiculously important as we do not include phuntime for non-fpm runtimes, this library should be delivered
+ * with task dependencies.
  *
  * @noinspection PhpIncludeInspection
  */
 require_once $taskVendorPath;
 
-$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
+$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment($_ENV);
 $handler = \Phuntime\Core\EventProcessor::fromRuntime($runtime);
 
 try {

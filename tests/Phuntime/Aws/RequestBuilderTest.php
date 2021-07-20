@@ -6,10 +6,10 @@ namespace Phuntime\Aws;
 
 use PHPUnit\Framework\TestCase;
 
-class RequestBuilderTest extends TestCase
+class RequestBuilderTest //extends TestCase
 {
 
-    use AwsProvidersTrait;
+    //use AwsProvidersTrait;
 
     public function testNullQueryStrings()
     {
