@@ -22,7 +22,7 @@ class PhpFpmProcess
      * Where is php-fpm executable located?
      * @var string
      */
-    private const FPM_EXECUTABLE_PATH = '/opt/bin/php-fpm';
+    private $fpmExecutablePath;
 
     /**
      * @var resource
@@ -33,16 +33,17 @@ class PhpFpmProcess
 
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, string $fpmExecutablePath)
     {
         $this->logger = $logger;
+        $this->fpmExecutablePath = $fpmExecutablePath;
     }
 
     public function start()
     {
 
-        if(!file_exists(self::FPM_EXECUTABLE_PATH)) {
-            throw new \RuntimeException(sprintf('Could not find PHP FPM executable! (tried: %s)', self::FPM_EXECUTABLE_PATH));
+        if(!file_exists($this->fpmExecutablePath)) {
+            throw new \RuntimeException(sprintf('Could not find PHP FPM executable! (tried: %s)', $this->fpmExecutablePath));
         }
 
         /**
@@ -69,7 +70,7 @@ class PhpFpmProcess
         $this->process = proc_open(
             sprintf(
                 '%s  --nodaemonize --fpm-config /opt/php/php-fpm.conf',
-                self::FPM_EXECUTABLE_PATH
+                $this->fpmExecutablePath
             ),
             $descriptors,
             $this->pipes
