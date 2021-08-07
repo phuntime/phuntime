@@ -44,6 +44,10 @@ RUN EXTENSION_DIR=/opt/php/ext ./configure --prefix=/opt/php \
     --enable-fpm \
     --with-openssl \
     --with-curl \
+#    --with-zip \ #TODO add libzip
+#    --with-sodium \ #TODO add libsodium
+    --with-gettext \
+#    --with-gmp \ #TODO add GNU MP
     --with-zlib \
     --disable-short-tags \
     --without-pear \
