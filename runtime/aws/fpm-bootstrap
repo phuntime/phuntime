@@ -14,33 +14,41 @@ require_once __DIR__.'/vendor/autoload.php';
  * (@see https://www.swoole.co.uk/docs/modules/swoole-coroutine-fastcgi-client)
  * To make it work properly, we need to run our code in coroutine.
  */
-Co\run(function() {
-    $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment();
-    $logger = $runtime->getLogger();
-    $function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext(), $logger);
-    $handler = \Phuntime\Core\EventProcessor::fromRuntime($runtime, $function);
-    $fpmProcess = new PhpFpmProcess(
-            $logger,
-            $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm',
-            $_SERVER['FPM_CONFIG_PATH'] ?? '/opt/php/php-fpm.conf'
-    );
 
+$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment($_SERVER);
+
+$logger = $runtime->getLogger();
+$function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext(), $logger);
+$handler = \Phuntime\Core\EventProcessor::fromRuntime($runtime, $function);
+$fpmProcess = new PhpFpmProcess(
+        $logger,
+        $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm',
+        $_SERVER['FPM_CONFIG_PATH'] ?? '/opt/php/php-fpm.conf'
+);
+
+try {
+    $handler->boot();
+    $fpmProcess->start();
+} catch (\Throwable $exception) {
+    throw $exception;
+
+    $runtime->handleInitializationException($exception);
+    return 1;
+}
+
+
+/**
+ * All events received by AWS Lambda are received and handled here.
+ */
+while (true) {
     try {
-        $handler->boot();
-        $fpmProcess->start();
-    } catch (\Throwable $exception) {
-        $runtime->handleInitializationException($exception);
-        return 1;
-    }
-
-    /**
-     * All events received by AWS Lambda are received and handled here.
-     */
-    while (true) {
-        $request = $runtime->getNextRequest();
+        $request = $runtime->getNextEvent();
         $handler->handleEvent($request);
         $fpmProcess->tick();
+    } catch (\Throwable $e) {
+        throw $e;
+        $fpmProcess->stop();
     }
+}
 
-    return 1;
-});
+return 1;
