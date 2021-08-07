@@ -40,6 +40,11 @@ class PhpFpmProcess
 
     public function start()
     {
+
+        if(!file_exists(self::FPM_EXECUTABLE_PATH)) {
+            throw new \RuntimeException(sprintf('Could not find PHP FPM executable! (tried: %s)', self::FPM_EXECUTABLE_PATH));
+        }
+
         /**
          * no need to run process twice if running
          */
