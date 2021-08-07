@@ -19,7 +19,11 @@ Co\run(function() {
     $logger = $runtime->getLogger();
     $function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext(), $logger);
     $handler = \Phuntime\Core\EventProcessor::fromRuntime($runtime, $function);
-    $fpmProcess = new PhpFpmProcess($logger, $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm');
+    $fpmProcess = new PhpFpmProcess(
+            $logger,
+            $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm',
+            $_SERVER['FPM_CONFIG_PATH'] ?? '/opt/php/php-fpm.conf'
+    );
 
     try {
         $handler->boot();

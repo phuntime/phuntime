@@ -20,9 +20,10 @@ class PhpFpmProcess
 
     /**
      * Where is php-fpm executable located?
-     * @var string
      */
-    private $fpmExecutablePath;
+    private string $fpmExecutablePath;
+
+    private string $configPath;
 
     /**
      * @var resource
@@ -33,13 +34,18 @@ class PhpFpmProcess
 
     private LoggerInterface $logger;
 
-    public function __construct(LoggerInterface $logger, string $fpmExecutablePath)
+    public function __construct(
+        LoggerInterface $logger,
+        string $fpmExecutablePath,
+        string $configPath
+    )
     {
         $this->logger = $logger;
         $this->fpmExecutablePath = $fpmExecutablePath;
+        $this->configPath = $configPath;
     }
 
-    public function start()
+    public function start(): void
     {
 
         if(!file_exists($this->fpmExecutablePath)) {
@@ -69,8 +75,9 @@ class PhpFpmProcess
          */
         $this->process = proc_open(
             sprintf(
-                '%s  --nodaemonize --fpm-config /opt/php/php-fpm.conf',
-                $this->fpmExecutablePath
+                '%s  --nodaemonize --fpm-config %s',
+                $this->fpmExecutablePath,
+                $this->configPath
             ),
             $descriptors,
             $this->pipes
