@@ -86,16 +86,22 @@ class PhpFpmProcess
 
         /**
          * proc_open() only can tell if process is running, but this does not mean it can handle connections
-         * so we need to look for phrase in stdout to ensure fpm is fully loaded and ready for adventure
+         * so we need to look for phrase in stdout to ensure fpm is fully loaded and ready (or not) for adventure
          */
         $isReady = false;
         $readyPhraseToCatch = 'ready to handle connections';
+        $failedPhraseToCatch = 'FPM initialization failed';
         $this->logger->debug('Waiting for fpm to be ready.');
 
         while ($isReady === false) {
             $logs = $this->popFpmLogs();
             $this->logFpmLogs($logs);
             $isReady = stripos($logs, $readyPhraseToCatch) !== false;
+            $initFailed = is_int(stripos($logs, $failedPhraseToCatch));
+
+            if($initFailed) {
+                throw new \RuntimeException('Unable to run php-fpm!');
+            }
         }
 
         $this->logger->info('FPM is ready for handling requests.');
