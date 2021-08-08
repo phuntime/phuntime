@@ -4,6 +4,11 @@ declare(strict_types=1);
 namespace Phuntime\Aws;
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use function get_class;
@@ -35,7 +40,7 @@ class AwsRuntimeClient
      * @param string|null $body
      * @param string $contentType
      * @return ResponseInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): ResponseInterface
     {
@@ -58,36 +63,42 @@ class AwsRuntimeClient
     /**
      * @param \Throwable $exception
      * @param string|null $requestId
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface|\JsonException
      */
     public function handleInvocationError(\Throwable $exception, string $requestId = null): void
     {
         $output = [
-            'errorMessage' => sprintf('InvocationError Occured: "%s"', $exception->getMessage()),
+            'errorMessage' => sprintf('InvocationError Occurred: "%s"', $exception->getMessage()),
             'errorType' => get_class($exception)
         ];
 
-        $output = json_encode($output);
+        $output = json_encode($output, JSON_THROW_ON_ERROR);
         $this->request('POST', 'invocation/' . $requestId . '/error', $output, 'application/json');
     }
 
     /**
      * @param \Throwable $throwable
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \JsonException
      */
-    public function handleInitializationException(\Throwable $throwable)
+    public function handleInitializationException(\Throwable $throwable): void
     {
         $output = [
             'errorMessage' => sprintf('InitializationException Occured: "%s"', $throwable->getMessage()),
             'errorType' => get_class($throwable)
         ];
 
-        $output = json_encode($output);
+        $output = json_encode($output, JSON_THROW_ON_ERROR);
         $this->request('POST', 'init/error', $output, 'application/json');
     }
 
+
     /**
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
      */
     public function getEvent(): array
     {
@@ -103,14 +114,15 @@ class AwsRuntimeClient
     /**
      * @param string $eventId
      * @param array $payload
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \JsonException
      */
     public function respondToEvent(string $eventId, array $payload): void
     {
         $this->request(
             'POST',
             sprintf('invocation/%s/response', $eventId),
-            json_encode($payload),
+            json_encode($payload, JSON_THROW_ON_ERROR),
             'application/json');
     }
 }
