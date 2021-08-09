@@ -1,14 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Phuntime\Core\FunctionHandler;
+namespace Phuntime\Fpm;
 
 
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\Stream;
-use Phuntime\Core\ContextInterface;
-use Phuntime\Core\PhpFpmProcess;
-use Phuntime\Core\RuntimeConfiguration;
+use Phuntime\Core\Contract\ContextInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -16,12 +14,9 @@ use Swoole\Coroutine\FastCGI\Client;
 use Swoole\FastCGI\HttpRequest;
 
 /**
- * Creates a PHP-FPM process and forwards them all requests.
- * @package Phuntime\Core\FunctionHandler
  * @license MIT
- * @deprecated potentially
  */
-class FpmHandler implements FunctionInterface
+class FpmHandler
 {
     protected Client $fastCgiClient;
 
