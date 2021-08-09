@@ -7,6 +7,7 @@ namespace Phuntime\Fpm;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7\Stream;
 use Phuntime\Core\Contract\ContextInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -46,14 +47,20 @@ class FpmHandler
         // TODO: Implement boot() method.
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(RequestInterface $request): ResponseInterface
     {
-        $contentType = $request->getHeader('Content-Type')[0];
+        $contentTypeHeaders = $request->getHeader('Content-Type');
+        if(count($contentTypeHeaders) === 0) {
+            $contentType = null;
+        } else {
+            $contentType = reset($contentTypeHeaders);
+        }
+
         $httpRequest = new HttpRequest();
         $httpRequest
             ->withRequestUri($request->getUri()->getPath())
-            ->withQueryString(http_build_query($request->getQueryParams()))
-            ->withScriptFilename($this->context->getHandlerPath())
+            //->withQueryString(http_build_query($request->getQueryParams()))
+            //->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
             ->withBody((string)$request->getBody());
 
