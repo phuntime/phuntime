@@ -18,6 +18,7 @@ class ApiGatewayProxyEvent implements EventInterface
     protected string $httpVersion;
     protected string $path;
     protected string $domainName;
+    protected string $requestId;
 
     public static function fromArray(array $payload): self
     {
@@ -25,6 +26,7 @@ class ApiGatewayProxyEvent implements EventInterface
         $object->httpVersion = $payload['httpMethod'];
         $object->path = $payload['path'];
         $object->domainName = $payload['requestContext']['domainName'];
+        $object->requestId = $payload['requestContext']['requestId'];
 
         return $object;
     }
@@ -55,5 +57,21 @@ class ApiGatewayProxyEvent implements EventInterface
     public function isAsync(): bool
     {
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function buildUrl(): string
+    {
+       return sprintf('https://%s%s', $this->domainName, $this->path);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestId(): string
+    {
+        return $this->requestId;
     }
 }
