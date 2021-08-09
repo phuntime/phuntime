@@ -54,6 +54,6 @@ class ApiGatewayProxyEvent implements EventInterface
 
     public function isAsync(): bool
     {
-        return true;
+        return false;
     }
 }
