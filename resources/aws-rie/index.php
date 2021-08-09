@@ -25,6 +25,15 @@ $http->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Respo
         $response->end(json_encode($requestJson));
     }
 
+    if($method === 'POST' && str_starts_with($pathInfo, '/2018-06-01/runtime/invocation/') && str_ends_with($pathInfo, '/response')) {
+
+        error_log('[info] AWS RIE matched');
+        error_log($request->getContent());
+        $response->header("Content-Type", "application/json");
+        $response->setStatusCode(200);
+        $response->end('{]');
+    }
+
 });
 
 $http->start();
