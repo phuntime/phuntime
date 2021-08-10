@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace Phuntime\Aws;
 
-
-use Phuntime\Core\ContextInterface;
-use Phuntime\Core\RuntimeInterface;
-use Psr\Http\Message\ResponseInterface;
+use Phuntime\Aws\Type\ApiGatewayProxyEvent;
+use Phuntime\Aws\Type\ApiGatewayProxyResult;
+use Phuntime\Core\Contract\ContextInterface;
+use Phuntime\Core\Contract\RuntimeInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface as HttpClientResponseInterface;
+use RuntimeException;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * @see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html
@@ -34,10 +33,16 @@ class AwsRuntime implements RuntimeInterface
      */
     protected EventClassifier $classifier;
 
-    /**
-     * @var HttpClientInterface
-     */
-    protected HttpClientInterface $httpClient;
+    protected AwsRuntimeClient $runtimeClient;
+
+    public function __construct(
+        AwsContext $context,
+        ?AwsRuntimeClient $runtimeClient = null
+    )
+    {
+        $this->context = $context;
+        $this->runtimeClient = $runtimeClient ?? new AwsRuntimeClient($context->getRuntimeHost());
+    }
 
     /**
      * @return LoggerInterface
@@ -49,78 +54,51 @@ class AwsRuntime implements RuntimeInterface
 
     /**
      * @return object
+     * @throws TransportExceptionInterface
      */
-    public function getNextRequest(): object
+    public function getNextEvent(): object
     {
-        $requestData = $this->request('GET', 'invocation/next');
-        $content = $requestData->toArray(false);
-        $headers = $requestData->getHeaders(false);
+        $this->logger->debug('next event requested');
+        list($content,) = $this->runtimeClient->getEvent();
 
-        if ($this->classifier->isApiGatewayProxyEvent($content)) {
-            //This is the only place we have headers from Lambda runtime, so we need to add request id here
-            $requestId = $headers['lambda-runtime-aws-request-id'][0];
-            return RequestBuilder::buildPsr7Request($content)
-                ->withAttribute('REQUEST_ID', $requestId);
+        if ($this->classifier->isApiGatewayV1ProxyEvent($content)) {
+            return ApiGatewayProxyEvent::fromArray($content);
         }
 
-        throw new \RuntimeException('Unsupported event received');
+        throw new RuntimeException('Unsupported event received');
     }
 
     /**
-     * All HTTP Responses must be converted to API Gateway Proxy Result
-     * @see https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-output-format
-     * @param string $requestId
-     * @param ResponseInterface $response
+     * @param string $eventId
+     * @param object $response
+     * @throws TransportExceptionInterface
      */
-    public function respondToRequest(string $requestId, ResponseInterface $response): void
+    public function respondToEvent(string $eventId, object $response): void
     {
-        $proxyResult = [
-            'statusCode' => $response->getStatusCode(),
-            'body' => (string)$response->getBody()
-        ];
-
-        $headers = $response->getHeaders();
-
-        //API Gateway expects to receive a array<string, array|string> or "empty" JSON object in this field
-        //Does not like empty arrays passed here and it will throw "Malformed Lambda proxy response" error
-        if(count($headers) > 0) {
-            $proxyResult['multiValueHeaders'] = $headers;
+        if(!($response instanceof ApiGatewayProxyResult)) {
+            throw new \InvalidArgumentException(sprintf('Unsupported event passed to %s', __METHOD__));
         }
 
-        $this->request('POST', 'invocation/' . $requestId . '/response', json_encode($proxyResult), 'application/json');
-    }
-
-    /**
-     * @return ContextInterface
-     */
-    public function getContext(): ContextInterface
-    {
-        return $this->context;
+        $this->runtimeClient->respondToEvent($eventId, $response->toArray());
     }
 
 
     /**
-     * Emits error occured during event handling
-     * @param string $requestId
-     * @param ErrorMessage $errorMessage
-     * @param array $stackTrace
+     * Emits error occurred during event handling
+     * @param \Throwable $exception
+     * @param string|null $requestId
+     * @throws TransportExceptionInterface
      */
     public function handleInvocationError(\Throwable $exception, ?string $requestId = null): void
     {
 
         if ($requestId !== null) {
-            $output = [
-                'errorMessage' => sprintf('InvocationError Occured: "%s", see CloudWatch logs for details.', $exception->getMessage()),
-                'errorType' => get_class($exception)
-            ];
-
-            $output = json_encode($output);
-            $this->request('POST', 'invocation/' . $requestId . '/error', $output, 'application/json');
+            $this->runtimeClient->handleInvocationError($exception, $requestId);
         }
 
         $this->getLogger()->critical(
             sprintf(
-                'InvocationError occured during request execution: %s ',
+                'InvocationError occurred during request execution: %s ',
                 $exception->getMessage()
             ),
             $exception->getTrace()
@@ -129,16 +107,11 @@ class AwsRuntime implements RuntimeInterface
 
     /**
      * @param \Throwable $throwable
+     * @throws TransportExceptionInterface
      */
     public function handleInitializationException(\Throwable $throwable)
     {
-        $output = [
-            'errorMessage' => sprintf('InitializationException Occured: "%s", see CloudWatch logs for details.', $throwable->getMessage()),
-            'errorType' => get_class($throwable)
-        ];
-
-        $output = json_encode($output);
-        $this->request('POST', 'init/error', $output, 'application/json');
+        $this->runtimeClient->handleInitializationException($throwable);
 
         //Also send to stderr
         $this->getLogger()->emergency(
@@ -152,35 +125,23 @@ class AwsRuntime implements RuntimeInterface
     }
 
     /**
-     * Creates a new instance of AwsRuntime with all configuration taken from ennvironment variables
+     * Creates a new instance of AwsRuntime with all configuration taken from environment variables
+     * @param array $env - inject $_ENV here
      * @return static
      */
-    public static function fromEnvironment(): self
+    public static function fromEnvironment(array $env): self
     {
-        $self = new self();
-        $self->context = AwsContext::fromArray($_ENV);
+        $self = new self(
+            AwsContext::fromArray($env)
+        );
         $self->logger = new AwsLogger();
         $self->classifier = new EventClassifier();
-        $self->httpClient = HttpClient::create();
 
         return $self;
     }
 
-    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): HttpClientResponseInterface
+    public function getContext(): ContextInterface
     {
-        $method = strtoupper($method);
-
-        $url = sprintf(
-            'http://%s/2018-06-01/runtime/%s',
-            $this->context->getParameter('AWS_LAMBDA_RUNTIME_API'),
-            $path
-        );
-
-        return $this->httpClient->request($method, $url, [
-            'body' => $body,
-            'headers' => [
-                'Content-Type' => $contentType
-            ],
-        ]);
+        return $this->context;
     }
 }
