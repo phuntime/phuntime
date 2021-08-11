@@ -19,6 +19,8 @@ class ApiGatewayProxyEvent implements EventInterface
     protected string $path;
     protected string $domainName;
     protected string $requestId;
+    protected array $multiValueQueryStringParameters;
+    protected array $queryStringParameters;
 
     public static function fromArray(array $payload): self
     {
@@ -27,6 +29,8 @@ class ApiGatewayProxyEvent implements EventInterface
         $object->path = $payload['path'];
         $object->domainName = $payload['requestContext']['domainName'];
         $object->requestId = $payload['requestContext']['requestId'];
+        $object->multiValueQueryStringParameters = $payload['multiValueQueryStringParameters'] ?? [];
+        $object->queryStringParameters = $payload['queryStringParameters'] ?? [];
 
         return $object;
     }
@@ -64,7 +68,7 @@ class ApiGatewayProxyEvent implements EventInterface
      */
     public function buildUrl(): string
     {
-       return sprintf('https://%s%s', $this->domainName, $this->path);
+       return sprintf('https://%s%s?%s', $this->domainName, $this->path, http_build_query($this->multiValueQueryStringParameters));
     }
 
     /**
@@ -74,4 +78,22 @@ class ApiGatewayProxyEvent implements EventInterface
     {
         return $this->requestId;
     }
+
+    /**
+     * @return array
+     */
+    public function getMultiValueQueryStringParameters(): array
+    {
+        return $this->multiValueQueryStringParameters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryStringParameters(): array
+    {
+        return $this->queryStringParameters;
+    }
+
+
 }
