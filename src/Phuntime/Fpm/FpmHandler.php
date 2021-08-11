@@ -38,7 +38,7 @@ class FpmHandler
 
     public function handleEvent(object $event)
     {
-
+        return $this->handle($event);
 
     }
 
@@ -73,26 +73,32 @@ class FpmHandler
             $httpRequest = $httpRequest->withHeader($psrHeaderKey, reset($headerValues));
         }
 
+        /**
+         * FPM requests are handled by using Swoole Coroutine FastCGI Client
+         * (@see https://www.swoole.co.uk/docs/modules/swoole-coroutine-fastcgi-client)
+         * To make it work properly, we need to run our code in coroutine.
+         */
+        $fcgi = $this->fastCgiClient;
+        $fcgiResponse = null;
+        \Co\run(static function() use ($fcgi, $httpRequest, &$fcgiResponse) {
+            $fcgiResponse = $fcgi->execute($httpRequest);
+        });
 
-        $fpmResponse = $this->fastCgiClient->execute($httpRequest);
-        $this->logger->debug(sprintf('Response from FPM: HTTP %s, ', $fpmResponse->getStatusCode()));
+
+        $this->logger->debug(sprintf('Response from FPM: HTTP %s, ', $fcgiResponse->getStatusCode()));
         $response = new Response();
 
-        foreach ($fpmResponse->getHeaders() as $headerName => $headerValue) {
+        foreach ($fcgiResponse->getHeaders() as $headerName => $headerValue) {
             $response = $response->withHeader($headerName, $headerValue);
         }
 
         return $response
-            ->withStatus($fpmResponse->getStatusCode())
+            ->withStatus($fcgiResponse->getStatusCode())
             ->withBody(
                 Stream::create(
-                    $fpmResponse->getBody()
+                    $fcgiResponse->getBody()
                 )
             );
     }
 
-    public function getRuntimeConfiguration(): RuntimeConfiguration
-    {
-        // TODO: Implement getRuntimeConfiguration() method.
-    }
 }
