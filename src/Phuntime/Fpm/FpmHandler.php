@@ -60,7 +60,7 @@ class FpmHandler
         $httpRequest
             ->withRequestUri($request->getUri()->getPath())
             //->withQueryString(http_build_query($request->getQueryParams()))
-            //->withScriptFilename($this->context->getHandlerPath())
+            ->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
             ->withBody((string)$request->getBody());
 
