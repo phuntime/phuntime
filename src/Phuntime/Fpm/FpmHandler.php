@@ -65,6 +65,7 @@ class FpmHandler
             ->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
             ->withBody((string)$request->getBody())
+            ->withParam('HTTP_PROXY', '') // https://httpoxy.org/
             ->withParam('PATH_INFO', $request->getUri()->getPath());
 
         if($contentType !== null) {
