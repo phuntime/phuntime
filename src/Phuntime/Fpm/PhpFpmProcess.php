@@ -101,7 +101,7 @@ class PhpFpmProcess
         $this->logger->debug('Waiting for fpm to be ready.');
 
         while ($isReady === false) {
-            $logs = $this->popFpmLogs();
+            $logs = (string)$this->popFpmLogs();
             $this->logFpmLogs($logs);
             $isReady = stripos($logs, $readyPhraseToCatch) !== false;
             $initFailed = is_int(stripos($logs, $failedPhraseToCatch));
