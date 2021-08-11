@@ -42,8 +42,16 @@ try {
  */
 while (true) {
     try {
-        $request = $runtime->getNextEvent();
-        $handler->handleEvent($request);
+        /** @var \Phuntime\Aws\Type\ApiGatewayProxyEvent $apiGwEvent */
+        $apiGwEvent = $runtime->getNextEvent();
+        if(!($apiGwEvent instanceof \Phuntime\Aws\Type\ApiGatewayProxyEvent)) {
+            //@TODO: Notify that invalid request happened
+        }
+
+        $psrRequest = $apiGwPsr->apiGwToPsr7Request($apiGwEvent);
+        $response = $function->handleEvent($psrRequest);
+        $proxyResult = $apiGwPsr->psr7ResponseToApiGw($response);
+        $runtime->respondToEvent($apiGwEvent->getRequestId(), $proxyResult);
         $fpmProcess->tick();
     } catch (\Throwable $e) {
         throw $e;
