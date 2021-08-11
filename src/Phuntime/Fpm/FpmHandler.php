@@ -58,12 +58,14 @@ class FpmHandler
 
         $httpRequest = new HttpRequest();
         $httpRequest
+            ->withDocumentRoot($this->context->getFunctionDocumentRoot())
             ->withUri((string) $request->getUri())
             ->withRequestUri($request->getUri()->getPath())
             ->withQueryString($request->getUri()->getQuery())
             ->withScriptFilename($this->context->getHandlerPath())
             ->withMethod($request->getMethod())
-            ->withBody((string)$request->getBody());
+            ->withBody((string)$request->getBody())
+            ->withParam('PATH_INFO', $request->getUri()->getPath());
 
         if($contentType !== null) {
             $this->logger->debug(sprintf('Setting content type to "%s".', $contentType));
