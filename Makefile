@@ -5,8 +5,11 @@ SWOOLE_VERSION = "4.5.9"
 
 
 aws-80-fpm:
-	 cd ./runtime/aws && ./build.sh --php-version ${PHP_8_VERSION} --bison-version ${BISON_VERSION} --swoole-version ${SWOOLE_VERSION}
-aws-80:
+	 cd ./runtime/aws && ./build.sh \
+ 		--php-version ${PHP_8_VERSION} \
+ 		--bison-version ${BISON_VERSION} \
+ 		--swoole-version ${SWOOLE_VERSION} \
+ 		--output $(shell pwd)/build/aws-runtime
 
 
 
