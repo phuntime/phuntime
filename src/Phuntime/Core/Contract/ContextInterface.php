@@ -19,4 +19,6 @@ interface ContextInterface
 
     public function getFunctionDocumentRoot(): string;
 
+    public function getHandlerScriptName(): string;
+
 }
