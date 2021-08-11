@@ -2,35 +2,27 @@
 <?php
 declare(strict_types=1);
 
-use Phuntime\Core\PhpFpmProcess;
-
-/**
- * @noinspection PhpIncludeInspection
- */
+use Phuntime\Fpm\PhpFpmProcess;
 require_once __DIR__.'/vendor/autoload.php';
-
-/**
- * FPM requests are handled by using Swoole Coroutine FastCGI Client
- * (@see https://www.swoole.co.uk/docs/modules/swoole-coroutine-fastcgi-client)
- * To make it work properly, we need to run our code in coroutine.
- */
 
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment($_SERVER);
 
 $logger = $runtime->getLogger();
-$function = new \Phuntime\Core\FunctionHandler\FpmHandler($runtime->getContext(), $logger);
-$handler = \Phuntime\Core\EventProcessor::fromRuntime($runtime, $function);
+$function = new \Phuntime\Fpm\FpmHandler($runtime->getContext(), $logger);
 $fpmProcess = new PhpFpmProcess(
         $logger,
         $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm',
         $_SERVER['FPM_CONFIG_PATH'] ?? '/opt/php/php-fpm.conf'
 );
 
+$psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+$apiGwPsr = new \Phuntime\Bridge\Aws\ApiGatewayPsrBridge($psr17Factory);
+
 try {
-    $handler->boot();
+    $function->boot();
     $fpmProcess->start();
 } catch (\Throwable $exception) {
-    throw $exception;
+
 
     $runtime->handleInitializationException($exception);
     return 1;
