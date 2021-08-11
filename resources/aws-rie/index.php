@@ -15,7 +15,8 @@ $store->exec('
         processing INT,
         response_code INT,
         response_body TEXT,
-        response_headers TEXT
+        response_headers TEXT,
+        query_string TEXT
     );
 ');
 
@@ -43,14 +44,13 @@ $http->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Respo
         $store->exec('UPDATE events SET processing = 1 WHERE id = '.$reqId);
         print(sprintf('[debug] acking req id: %s', $reqId ).PHP_EOL);
 
-
-
-        $requestJson = json_decode(file_get_contents(__DIR__.'/../../tests/fixtures/aws-apigateway-v1-event-1.json'), true);
+        /** @var array $requestJson */
+        $requestJson = json_decode(file_get_contents(__DIR__ . '/../../tests/fixtures/aws-apigateway-v1-event-1.json'), true, 512, JSON_THROW_ON_ERROR);
         $requestJson['requestContext']['requestId'] = $reqId;
-
+        $requestJson['multiValueQueryStringParameters'] = json_decode($req['query_string'], true, 512, JSON_THROW_ON_ERROR);
 
         $response->header("Content-Type", "application/json");
-        $response->end(json_encode($requestJson));
+        $response->end(json_encode($requestJson, JSON_THROW_ON_ERROR));
         return;
 
     }
@@ -78,13 +78,14 @@ $http->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Respo
     }
 
     $stmt = $store->query(
-        'INSERT INTO events(id, method, path_info, processing ) VALUES (:id, :m, :pi, 0)'
+        'INSERT INTO events(id, method, path_info, processing, query_string ) VALUES (:id, :m, :pi, 0, :qs)'
     );
 
     $stmt->execute([
         'id' => $requestId,
         'm' => $method,
         'pi' => $pathInfo,
+        'qs' => json_encode($request->get)
     ]);
 
 
