@@ -17,4 +17,6 @@ interface ContextInterface
      */
     public function getHandlerPath(): string;
 
+    public function getFunctionDocumentRoot(): string;
+
 }

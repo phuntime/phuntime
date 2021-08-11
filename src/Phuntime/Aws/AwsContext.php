@@ -72,4 +72,9 @@ class AwsContext implements ContextInterface
     {
         return $this->parameters['AWS_LAMBDA_RUNTIME_API'];
     }
+
+    public function getFunctionDocumentRoot(): string
+    {
+        return $this->getParameter('LAMBDA_TASK_ROOT');
+    }
 }
