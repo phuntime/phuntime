@@ -56,9 +56,11 @@ class FpmHandler
             $contentType = reset($contentTypeHeaders);
         }
 
+        $path = $request->getUri()->getPath();
+        $documentRoot = $this->context->getFunctionDocumentRoot();
         $httpRequest = new HttpRequest();
         $httpRequest
-            ->withDocumentRoot($this->context->getFunctionDocumentRoot())
+            ->withDocumentRoot($documentRoot)
             ->withUri((string) $request->getUri())
             ->withRequestUri($request->getUri()->getPath())
             ->withQueryString($request->getUri()->getQuery())
@@ -66,7 +68,8 @@ class FpmHandler
             ->withMethod($request->getMethod())
             ->withBody((string)$request->getBody())
             ->withParam('HTTP_PROXY', '') // https://httpoxy.org/
-            ->withParam('PATH_INFO', $request->getUri()->getPath());
+            ->withParam('PATH_INFO', $path)
+            ->withParam('PATH_TRANSLATED', sprintf('%s/%s', $documentRoot, $path));
 
         if($contentType !== null) {
             $this->logger->debug(sprintf('Setting content type to "%s".', $contentType));
