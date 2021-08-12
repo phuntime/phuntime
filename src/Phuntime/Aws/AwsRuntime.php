@@ -29,11 +29,6 @@ class AwsRuntime implements RuntimeInterface
      */
     protected AwsLogger $logger;
 
-    /**
-     * @var EventClassifier
-     */
-    protected EventClassifier $classifier;
-
     protected AwsRuntimeClient $runtimeClient;
 
     public function __construct(
