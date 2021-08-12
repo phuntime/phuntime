@@ -6,6 +6,7 @@ namespace Phuntime\Aws;
 use Phuntime\Aws\Type\ApiGatewayProxyEvent;
 use Phuntime\Aws\Type\ApiGatewayProxyResult;
 use Phuntime\Core\Contract\ContextInterface;
+use Phuntime\Core\Contract\IncomingEvent;
 use Phuntime\Core\Contract\RuntimeInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -56,16 +57,14 @@ class AwsRuntime implements RuntimeInterface
      * @return object
      * @throws TransportExceptionInterface
      */
-    public function getNextEvent(): object
+    public function getNextEvent(): IncomingEvent
     {
         $this->logger->debug('next event requested');
-        list($content,) = $this->runtimeClient->getEvent();
-
-        if ($this->classifier->isApiGatewayV1ProxyEvent($content)) {
-            return ApiGatewayProxyEvent::fromArray($content);
-        }
-
-        throw new RuntimeException('Unsupported event received');
+        [$content, $headers, $requestId] = $this->runtimeClient->getEvent();
+        /** @var $content array */
+        /** @var $headers array */
+        /** @var $requestId string */
+        return new IncomingEvent($content, $requestId, $headers);
     }
 
     /**
@@ -75,7 +74,7 @@ class AwsRuntime implements RuntimeInterface
      */
     public function respondToEvent(string $eventId, object $response): void
     {
-        if(!($response instanceof ApiGatewayProxyResult)) {
+        if (!($response instanceof ApiGatewayProxyResult)) {
             throw new \InvalidArgumentException(sprintf('Unsupported event passed to %s', __METHOD__));
         }
 
@@ -135,7 +134,6 @@ class AwsRuntime implements RuntimeInterface
             AwsContext::fromArray($env)
         );
         $self->logger = new AwsLogger();
-        $self->classifier = new EventClassifier();
 
         return $self;
     }

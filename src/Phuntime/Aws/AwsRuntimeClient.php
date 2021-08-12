@@ -44,20 +44,26 @@ class AwsRuntimeClient
      */
     protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): ResponseInterface
     {
+
         $method = strtoupper($method);
 
+        var_dump($body);
         $url = sprintf(
             'http://%s/2018-06-01/runtime/%s',
             $this->runtimeHost,
             $path
         );
 
-        return $this->httpClient->request($method, $url, [
+        $rq = $this->httpClient->request($method, $url, [
             'body' => $body,
             'headers' => [
                 'Content-Type' => $contentType
             ],
         ]);
+
+        var_dump($rq->getContent(false));
+
+        return $rq;
     }
 
     /**
@@ -103,12 +109,13 @@ class AwsRuntimeClient
     public function getEvent(): array
     {
         $request = $this->request('GET', 'invocation/next');
+        $headers = $request->getHeaders(false);
 
         return [
             $request->toArray(false),
-            $request->getHeaders(false)
+            $headers,
+            reset($headers['lambda-runtime-aws-request-id'])
         ];
-
     }
 
     /**

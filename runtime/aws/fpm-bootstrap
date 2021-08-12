@@ -17,6 +17,7 @@ $fpmProcess = new PhpFpmProcess(
 
 $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
 $apiGwPsr = new \Phuntime\Bridge\Aws\ApiGatewayPsrBridge($psr17Factory);
+$classifier = new \Phuntime\Aws\EventClassifier();
 
 try {
     $function->boot();
@@ -34,16 +35,18 @@ try {
  */
 while (true) {
     try {
-        /** @var \Phuntime\Aws\Type\ApiGatewayProxyEvent $apiGwEvent */
-        $apiGwEvent = $runtime->getNextEvent();
-        if(!($apiGwEvent instanceof \Phuntime\Aws\Type\ApiGatewayProxyEvent)) {
-            //@TODO: Notify that invalid request happened
+        /** @var \Phuntime\Core\Contract\IncomingEvent $event */
+        $event = $runtime->getNextEvent();
+
+        if(!$classifier->isApiGatewayV1ProxyEvent($event->getPayload())) {
+            throw new \LogicException('Given event is not a Api Gateway Request');
         }
 
+        $apiGwEvent = \Phuntime\Aws\Type\ApiGatewayProxyEvent::fromArray($event->getPayload());
         $psrRequest = $apiGwPsr->apiGwToPsr7Request($apiGwEvent);
         $response = $function->handleEvent($psrRequest);
         $proxyResult = $apiGwPsr->psr7ResponseToApiGw($response);
-        $runtime->respondToEvent($apiGwEvent->getRequestId(), $proxyResult);
+        $runtime->respondToEvent($event->getEventId(), $proxyResult);
         $fpmProcess->tick();
     } catch (\Throwable $e) {
         throw $e;
