@@ -44,26 +44,19 @@ class AwsRuntimeClient
      */
     protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): ResponseInterface
     {
-
         $method = strtoupper($method);
-
-        var_dump($body);
         $url = sprintf(
             'http://%s/2018-06-01/runtime/%s',
             $this->runtimeHost,
             $path
         );
 
-        $rq = $this->httpClient->request($method, $url, [
+        return $this->httpClient->request($method, $url, [
             'body' => $body,
             'headers' => [
                 'Content-Type' => $contentType
             ],
         ]);
-
-        var_dump($rq->getContent(false));
-
-        return $rq;
     }
 
     /**
