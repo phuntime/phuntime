@@ -24,7 +24,6 @@ class ApiGatewayProxyResult
         return [
             'statusCode' => $this->statusCode,
             'headers' => $this->headers,
-            'multiValueHeaders' => $multiValueHeaders,
             'body' => $this->body,
             'isBase64Encoded' => $this->base64Encoded
         ];
