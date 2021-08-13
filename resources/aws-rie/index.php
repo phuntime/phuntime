@@ -50,6 +50,7 @@ $http->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Respo
         $requestJson['multiValueQueryStringParameters'] = json_decode($req['query_string'], true, 512, JSON_THROW_ON_ERROR);
 
         $response->header("Content-Type", "application/json");
+        $response->header('lambda-runtime-aws-request-id', $reqId);
         $response->end(json_encode($requestJson, JSON_THROW_ON_ERROR));
         return;
 
