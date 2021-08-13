@@ -69,8 +69,10 @@ class FpmHandler
             ->withBody((string)$request->getBody())
             ->withParam('HTTP_PROXY', '') // https://httpoxy.org/
             ->withParam('PATH_INFO', $path)
-            ->withParam('PATH_TRANSLATED', sprintf('%s/%s', $documentRoot, $path))
+            ->withParam('PATH_TRANSLATED', sprintf('%s/%s', rtrim($documentRoot, '/'), ltrim($this->context->getHandlerScriptName(), '/')))
             ->withParam('SCRIPT_NAME', $this->context->getHandlerScriptName());
+
+        //@TODO: assert presence of handler file in PATH_TRANSLATED
 
         if($contentType !== null) {
             $this->logger->debug(sprintf('Setting content type to "%s".', $contentType));
