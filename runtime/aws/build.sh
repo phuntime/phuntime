@@ -47,7 +47,7 @@ cp ./fpm-bootstrap $output_dir/bootstrap
 cp -r ./../../src $output_dir
 cp ./../../composer.json $output_dir
 cp ./../../composer.lock $output_dir
-(cd $output_dir && composer install)
+(cd $output_dir && composer install --no-dev --optimize-autoloader)
 
 printf "[build.sh][debug] fix file permissions\n"
 chmod +x $output_dir/bootstrap
