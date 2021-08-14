@@ -2,6 +2,13 @@
 
 Deploy your apps to FaaS platforms quickly.
 
+## Building runtimes:
+
+### AWS Lambda PHP8.0 FPM:
+
+`make aws-80-fpm`
+
+
 
 ## Development related things
 
