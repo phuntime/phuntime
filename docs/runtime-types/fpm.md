@@ -4,8 +4,7 @@ It's just a `php-fpm` compiled on Lambda. Requires very low effort to run as the
 for HTTP Requests handling.
 
 `phuntime-fpm` runtime assumes, that the file passed in `handler` config key is the front controller of your application,
-and it would be sent to fpm as script that have to be executed. There is also a way to override this value by using phuntime
-configuration file - see docs/configuration-file.md for details.
+and it would be sent to fpm as script that have to be executed. 
 
 ## Caveats && things you potentially find useful
 
