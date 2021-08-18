@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-        errorLevel="3"
+        phpVersion="8.0"
         resolveFromConfigFile="true"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="https://getpsalm.org/schema/config"
@@ -12,4 +12,13 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+    <stubs>
+        <file name="vendor/swoole/ide-helper/output/swoole_library/src/core/Coroutine/FastCGI/Client.php"/>
+        <file name="vendor/swoole/ide-helper/output/swoole_library/src/core/FastCGI/Request.php"/>
+        <file name="vendor/swoole/ide-helper/output/swoole_library/src/core/FastCGI/Message.php"/>
+        <file name="vendor/swoole/ide-helper/output/swoole_library/src/core/FastCGI/HttpRequest.php"/>
+        <file name="vendor/swoole/ide-helper/output/swoole_library/src/core/FastCGI/HttpResponse.php"/>
+        <file name="vendor/swoole/ide-helper/output/swoole_library/src/core/FastCGI/Response.php"/>
+
+    </stubs>
 </psalm>
