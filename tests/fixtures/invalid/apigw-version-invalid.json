@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "multiValueQueryStringParameters": {
+    "parameter1": [
+      "value1",
+      "value2"
+    ],
+    "parameter2": [
+      "value"
+    ]
+  },
+  "version": 10
+}
