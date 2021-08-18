@@ -47,7 +47,7 @@ class FpmHandler
         // TODO: Implement boot() method.
     }
 
-    public function handle(RequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $contentTypeHeaders = $request->getHeader('Content-Type');
         if(count($contentTypeHeaders) === 0) {
