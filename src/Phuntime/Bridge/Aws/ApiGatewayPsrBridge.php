@@ -9,6 +9,8 @@ use Phuntime\Aws\Type\ApiGatewayProxyResult;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @license MIT
@@ -17,13 +19,18 @@ class ApiGatewayPsrBridge
 {
 
     public function __construct(
-        private RequestFactoryInterface $requestFactory
+        private ServerRequestFactoryInterface $requestFactory
     )
     {}
 
-    public function apiGwToPsr7Request(ApiGatewayProxyEvent $event): RequestInterface
+    /**
+     * @TODO: add tests for v2 event
+     * @param ApiGatewayProxyEvent $event
+     * @return ServerRequestInterface
+     */
+    public function apiGwToPsr7Request(ApiGatewayProxyEvent $event): ServerRequestInterface
     {
-        return $this->requestFactory->createRequest(
+        return $this->requestFactory->createServerRequest(
             $event->getHttpMethod(),
             $event->buildUrl()
         );
