@@ -23,6 +23,12 @@ class ApiGatewayPsrBridgeTest extends TestCase
         self::assertEquals('/my/path1', $psr7Request->getUri()->getPath());
         self::assertEquals('GET', $psr7Request->getMethod());
         self::assertEquals('id.execute-api.us-east-1.amazonaws.com', $psr7Request->getUri()->getHost());
+        self::assertSame([
+            'parameter1' => ['value1', 'value2'],
+            'parameter2' => ['value'],
+        ], $psr7Request->getQueryParams());
+
+
     }
 
 }

@@ -30,10 +30,11 @@ class ApiGatewayPsrBridge
      */
     public function apiGwToPsr7Request(ApiGatewayProxyEvent $event): ServerRequestInterface
     {
-        return $this->requestFactory->createServerRequest(
-            $event->getHttpMethod(),
-            $event->buildUrl()
-        );
+        return
+            $this->requestFactory->createServerRequest(
+                $event->getHttpMethod(),
+                $event->buildUrl()
+            )->withQueryParams($event->getMultiValueQueryStringParameters());
     }
 
     public function psr7ResponseToApiGw(ResponseInterface $response): ApiGatewayProxyResult
