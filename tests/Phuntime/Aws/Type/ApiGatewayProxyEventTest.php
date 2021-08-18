@@ -9,14 +9,14 @@ use Phuntime\UnitTestHelper;
 
 class ApiGatewayProxyEventTest extends TestCase
 {
-    public function testValidVersionIsReturned()
+    public function testValidVersionIsReturned(): void
     {
         $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
         $event = ApiGatewayProxyEvent::fromArray($payload);
         self::assertSame('1.0', $event->getVersion());
     }
 
-    public function testHttpMethod()
+    public function testHttpMethod(): void
     {
         $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
         $event = ApiGatewayProxyEvent::fromArray($payload);
@@ -30,18 +30,18 @@ class ApiGatewayProxyEventTest extends TestCase
         self::assertSame('/my/path1', $event->getPath());
     }
 
-    public function testHttpHost()
+    public function testHttpHost(): void
     {
         $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
         $event = ApiGatewayProxyEvent::fromArray($payload);
         self::assertSame('id.execute-api.us-east-1.amazonaws.com', $event->getDomainName());
     }
 
-    public function testEventIsNotAsync()
+    public function testEventIsNotAsync(): void
     {
         $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
         $event = ApiGatewayProxyEvent::fromArray($payload);
-        self::assertTrue($event->isAsync());
+        self::assertFalse($event->isAsync());
     }
 
 }

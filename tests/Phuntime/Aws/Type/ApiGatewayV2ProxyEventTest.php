@@ -43,6 +43,6 @@ class ApiGatewayV2ProxyEventTest extends TestCase
     {
         $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v2-event-1');
         $event = ApiGatewayV2ProxyEvent::fromArray($payload);
-        self::assertTrue($event->isAsync());
+        self::assertFalse($event->isAsync());
     }
 }
