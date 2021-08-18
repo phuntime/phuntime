@@ -22,9 +22,15 @@ class ApiGatewayProxyEvent implements EventInterface
     protected array $multiValueQueryStringParameters;
     protected array $queryStringParameters;
 
+    /**
+     * @psalm-pure
+     * @param array $payload
+     * @psalm-param array{httpMethod: string} $payload
+     * @return static
+     */
     public static function fromArray(array $payload): self
     {
-        $object = new static();
+        $object = new self();
         $object->httpVersion = $payload['httpMethod'];
         $object->path = $payload['path'];
         $object->domainName = $payload['requestContext']['domainName'];

@@ -49,8 +49,12 @@ class AwsRuntime implements RuntimeInterface
     }
 
     /**
-     * @return object
+     * @return IncomingEvent
      * @throws TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      */
     public function getNextEvent(): IncomingEvent
     {

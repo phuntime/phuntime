@@ -11,9 +11,14 @@ namespace Phuntime\Aws\Type;
 class ApiGatewayV2ProxyEvent extends ApiGatewayProxyEvent
 {
 
+    /**
+     * @psalm-pure
+     * @param array $payload
+     * @return static
+     */
     public static function fromArray(array $payload): self
     {
-        $object = new static();
+        $object = new self();
         $object->httpVersion = $payload['requestContext']['http']['method'];
         $object->path = $payload['requestContext']['http']['path'];
         $object->domainName = $payload['requestContext']['domainName'];

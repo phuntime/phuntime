@@ -75,7 +75,7 @@ class AwsContext implements ContextInterface
 
     public function getFunctionDocumentRoot(): string
     {
-        return $this->getParameter('LAMBDA_TASK_ROOT');
+        return (string)$this->getParameter('LAMBDA_TASK_ROOT');
     }
 
     public function getHandlerScriptName(): string

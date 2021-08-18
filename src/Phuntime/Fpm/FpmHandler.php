@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Swoole\Coroutine\FastCGI\Client;
 use Swoole\FastCGI\HttpRequest;
+use Swoole\FastCGI\HttpResponse;
 
 /**
  * @license MIT
@@ -42,7 +43,7 @@ class FpmHandler
 
     }
 
-    public function boot()
+    public function boot(): void
     {
         // TODO: Implement boot() method.
     }
@@ -79,7 +80,9 @@ class FpmHandler
             $httpRequest = $httpRequest->withContentType($contentType);
         }
 
-        foreach ($request->getHeaders() as $psrHeaderKey => $headerValues) {
+        /** @psalm-var array<string, string[]> $psrHeaders */
+        $psrHeaders = $request->getHeaders();
+        foreach ($psrHeaders as $psrHeaderKey => $headerValues) {
             $httpRequest = $httpRequest->withHeader($psrHeaderKey, reset($headerValues));
         }
 
@@ -94,11 +97,15 @@ class FpmHandler
             $fcgiResponse = $fcgi->execute($httpRequest);
         });
 
+        /** @var HttpResponse $fcgiResponse */
+
 
         $this->logger->debug(sprintf('Response from FPM: HTTP %s, ', $fcgiResponse->getStatusCode()));
         $response = new Response();
 
-        foreach ($fcgiResponse->getHeaders() as $headerName => $headerValue) {
+        /** @var array<string, string> $headers */
+        $headers = $fcgiResponse->getHeaders();
+        foreach ($headers as $headerName => $headerValue) {
             $response = $response->withHeader($headerName, $headerValue);
         }
 

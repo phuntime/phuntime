@@ -24,3 +24,6 @@ run-aws-local:
 cleanup:
 	rm -rf ./.aws-sam
 	rm -rf ./build
+
+psalm:
+	vendor/bin/psalm --show-info=true

@@ -7,9 +7,8 @@ interface ContextInterface
 {
     /**
      * @param string $key
-     * @return string|int|array
      */
-    public function getParameter(string $key);
+    public function getParameter(string $key): int|array|string;
 
     /**
      * Returns absolute path to function handler
