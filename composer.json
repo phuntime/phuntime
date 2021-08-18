@@ -1,38 +1,37 @@
 {
-    "name": "phuntime/phuntime",
-    "description": "Run PHP Apps on FaaS platforms",
-    "type": "library",
-    "autoload": {
-        "psr-0": {
-            "Phuntime\\": "src/"
-        }
-    },
-
-    "autoload-dev": {
-        "psr-0": {
-            "Phuntime\\": "tests/"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.2",
-        "vimeo/psalm": "^4.9",
-        "swoole/ide-helper": "@dev",
-        "symfony/http-foundation": "^5.3",
-        "ext-pdo": "*"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "pizzaminded",
-            "email": "mikolajczajkowsky@gmail.com"
-        }
-    ],
-    "require": {
-        "psr/log": "^1.1",
-        "nyholm/psr7": ">=1.4",
-        "symfony/http-client-contracts": "^2.1",
-        "symfony/http-client": "^5.1",
-        "symfony/polyfill-php80": "^1.18",
-      "ext-json": "*"
+  "name": "phuntime/phuntime",
+  "description": "Run PHP Apps on FaaS platforms",
+  "type": "library",
+  "autoload": {
+    "psr-0": {
+      "Phuntime\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "Phuntime\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.2",
+    "vimeo/psalm": "^4.9",
+    "swoole/ide-helper": "@dev",
+    "symfony/http-foundation": "^5.3",
+    "ext-pdo": "*"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "pizzaminded",
+      "email": "mikolajczajkowsky@gmail.com"
+    }
+  ],
+  "require": {
+    "psr/log": "^1.1",
+    "nyholm/psr7": ">=1.4",
+    "symfony/http-client-contracts": "^2.1",
+    "symfony/http-client": "^5.1",
+    "symfony/polyfill-php80": "^1.18",
+    "ext-json": "*"
+  }
 }
