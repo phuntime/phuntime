@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Phuntime\Aws\Type;
 
+use stdClass;
 use function count;
 
 /**
@@ -24,7 +25,7 @@ class ApiGatewayProxyResult
          * PHP serializes empty array to... empty array in JSON, but API Gateway expects an object in headers key.
          * So we need to put anything to force headers to be serialized as object.
          */
-        $headers = ['Ping' => 'Pong'];
+        $headers = new stdClass();
 
         if(count($this->headers) > 0) {
             $headers = $this->headers;
