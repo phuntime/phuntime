@@ -44,17 +44,7 @@ class AwsContext implements ContextInterface
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getParameter(string $key)
-    {
-        if (!isset($this->parameters[$key])) {
-            throw new \RuntimeException(sprintf('Could not find "%s" parameter in context.', $key));
-        }
 
-        return $this->parameters[$key];
-    }
 
     /**
      * @return string
@@ -81,5 +71,14 @@ class AwsContext implements ContextInterface
     public function getHandlerScriptName(): string
     {
         return $this->getParameter('_HANDLER');
+    }
+
+    public function getParameter(string $key): int|array|string
+    {
+        if (!isset($this->parameters[$key])) {
+            throw new \RuntimeException(sprintf('Could not find "%s" parameter in context.', $key));
+        }
+
+        return $this->parameters[$key];
     }
 }
