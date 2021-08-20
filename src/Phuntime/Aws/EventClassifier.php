@@ -22,19 +22,11 @@ class EventClassifier
             return false;
         }
 
-        if (!isset($eventBody['multiValueQueryStringParameters'])) {
+        if (!array_key_exists('multiValueQueryStringParameters',$eventBody)) {
             return false;
         }
 
-        if(!is_array($eventBody['multiValueQueryStringParameters'])) {
-            return false;
-        }
-
-        if(!isset($eventBody['version'])) {
-            return false;
-        }
-
-        if($eventBody['version'] !== '1.0') {
+        if(!($eventBody['multiValueQueryStringParameters'] === null || is_array($eventBody['multiValueQueryStringParameters']))) {
             return false;
         }
 

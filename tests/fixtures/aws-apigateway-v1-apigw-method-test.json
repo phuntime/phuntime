@@ -1,0 +1,47 @@
+{
+  "resource": "/fpm/{proxy+}",
+  "path": "/fpm/264",
+  "httpMethod": "GET",
+  "headers": null,
+  "multiValueHeaders": null,
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "264"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "eozmo1",
+    "resourcePath": "/fpm/{proxy+}",
+    "httpMethod": "GET",
+    "extendedRequestId": "EYdqnEcxliAFQOQ=",
+    "requestTime": "20/Aug/2021:20:26:05 +0000",
+    "path": "/fpm/{proxy+}",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "test-invoke-stage",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1629491165395,
+    "requestId": "370edb68-bcac-4ef3-9d60-07778d0536b6",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "cognitoIdentityId": null,
+      "apiKey": "test-invoke-api-key",
+      "principalOrgId": null,
+      "cognitoAuthenticationType": null,
+      "userArn": "arn:aws:iam::123456789012:root",
+      "apiKeyId": "test-invoke-api-key-id",
+      "userAgent": "aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.116-64.217.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/legacy",
+      "accountId": "123456789012",
+      "caller": "123456789012",
+      "sourceIp": "test-invoke-source-ip",
+      "accessKey": "HEHEHEHEHEHEHEHEHEHE",
+      "cognitoAuthenticationProvider": null,
+      "user": "123456789012"
+    },
+    "domainName": "testPrefix.testDomainName",
+    "apiId": "phuntime"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

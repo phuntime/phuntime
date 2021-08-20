@@ -15,10 +15,15 @@ class EventClassifierTest extends TestCase
         return [
             [UnitTestHelper::getJsonFixture('invalid/apigw-empty')],
             [UnitTestHelper::getJsonFixture('invalid/apigw-http-method')],
-            [UnitTestHelper::getJsonFixture('invalid/apigw-multi-qs-null')],
             [UnitTestHelper::getJsonFixture('invalid/apigw-multi-qs-string')],
-            [UnitTestHelper::getJsonFixture('invalid/apigw-no-version')],
-            [UnitTestHelper::getJsonFixture('invalid/apigw-version-invalid')],
+        ];
+    }
+
+    public function validV1ApiGwEventsProvider()
+    {
+        return [
+            [UnitTestHelper::getJsonFixture('aws-apigateway-v1-apigw-method-test')],
+            [UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1')]
         ];
     }
 
@@ -33,9 +38,13 @@ class EventClassifierTest extends TestCase
         self::assertFalse($classifier->isApiGatewayV1ProxyEvent($payload));
     }
 
-    public function testThereWillBeApiGwV1Matched()
+    /**
+     * @dataProvider validV1ApiGwEventsProvider
+     * @param array $payload
+     */
+    public function testThereWillBeApiGwV1Matched(array $payload)
     {
-        $payload = UnitTestHelper::getJsonFixture('aws-apigateway-v1-event-1');
+
         $classifier = new EventClassifier();
 
         self::assertTrue($classifier->isApiGatewayV1ProxyEvent($payload));
