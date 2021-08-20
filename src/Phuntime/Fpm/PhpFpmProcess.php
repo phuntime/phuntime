@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Phuntime\Fpm;
 
 use Psr\Log\LoggerInterface;
+use RuntimeException;
+use function proc_get_status;
 
 /**
  * @package Phuntime\Core
@@ -26,10 +28,13 @@ class PhpFpmProcess
     private string $configPath;
 
     /**
-     * @var resource
+     * @var resource|null
      */
     private $process;
 
+    /**
+     * @var resource[]
+     */
     private array $pipes = [];
 
     private LoggerInterface $logger;
@@ -49,7 +54,7 @@ class PhpFpmProcess
     {
 
         if(!file_exists($this->fpmExecutablePath)) {
-            throw new \RuntimeException(sprintf('Could not find PHP FPM executable! (tried: %s)', $this->fpmExecutablePath));
+            throw new RuntimeException(sprintf('Could not find PHP FPM executable! (tried: %s)', $this->fpmExecutablePath));
         }
 
         /**
@@ -107,7 +112,7 @@ class PhpFpmProcess
             $initFailed = is_int(stripos($logs, $failedPhraseToCatch));
 
             if($initFailed) {
-                throw new \RuntimeException('Unable to run php-fpm!');
+                throw new RuntimeException('Unable to run php-fpm!');
             }
         }
 
@@ -129,6 +134,10 @@ class PhpFpmProcess
      */
     protected function checkProcessStatus():void
     {
+        if($this->process === null) {
+            throw new RuntimeException('Unable to check process status as there is no process');
+        }
+
         $status = proc_get_status($this->process);
         if(!$status['running']) {
             $this->logger->warning('php-fpm stopped running for some reason!');
@@ -153,9 +162,5 @@ class PhpFpmProcess
         }
 
         $this->logger->info(sprintf('FPM stdout: %s', $logs));
-    }
-    protected function stop()
-    {
-
     }
 }
