@@ -43,6 +43,7 @@ class ApiGatewayPsrBridge
         $result->setBody((string)$response->getBody());
         $result->setStatusCode($response->getStatusCode());
         $result->setBase64Encoded(false);
+        $result->setMultiValueHeaders($response->getHeaders());
 
 
         return $result;
