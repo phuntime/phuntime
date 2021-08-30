@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Phuntime\Fpm\PhpFpmProcess;
+use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
+
 require_once __DIR__.'/vendor/autoload.php';
 
 $runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment($_SERVER);
@@ -49,6 +51,9 @@ while (true) {
         $runtime->respondToEvent($event->getEventId(), $proxyResult);
         $fpmProcess->tick();
     } catch (\Throwable $e) {
+        if($e instanceof TimeoutExceptionInterface) {
+            continue;
+        }
         throw $e;
         $fpmProcess->stop();
     }
