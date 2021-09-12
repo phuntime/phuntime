@@ -17,6 +17,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     protected string $httpVersion;
     protected string $path;
     protected string $domainName;
+    protected string $rawQueryString;
 
     /**
      * @psalm-pure
@@ -29,6 +30,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
         $object->httpMethod = $payload['requestContext']['http']['method'];
         $object->path = $payload['requestContext']['http']['path'];
         $object->domainName = $payload['requestContext']['domainName'];
+        $object->rawQueryString = $payload['rawQueryString'];
 
         return $object;
     }
@@ -78,6 +80,14 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     public function getHttpMethod(): string
     {
         return $this->httpMethod;
+    }
+
+    /**
+     * @return string
+     */
+    public function buildUrl(): string
+    {
+        return sprintf('https://%s%s?%s', $this->domainName, $this->path, $this->rawQueryString);
     }
 
 
