@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `ApiGatewayPsrBridge` supports `ApiGatewayV2ProxyEvent` to PSR conversion
+- added `pcntl` extension
 
 ### Changed
 - separated `ApiGatewayProxyEvent` and `ApiGatewayV2ProxyEvent`
+- Bumped PHP version to `8.0.10`
 
 ### Fixed
 - Timeouts are not breaking the runtime
