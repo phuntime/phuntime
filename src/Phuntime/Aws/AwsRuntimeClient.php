@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Phuntime\Aws;
 
-use Symfony\Component\HttpClient\HttpClient;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonException;
+use Phuntime\Core\HttpClient\BlockingHttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
+use Throwable;
 use function get_class;
 use function json_encode;
 use function sprintf;
@@ -23,15 +23,15 @@ use function strtoupper;
 class AwsRuntimeClient
 {
     protected string $runtimeHost;
-    protected HttpClientInterface $httpClient;
+    protected BlockingHttpClient $httpClient;
 
     public function __construct(
         string $runtimeHost,
-        ?HttpClientInterface $httpClient = null
+        BlockingHttpClient $httpClient
     )
     {
         $this->runtimeHost = $runtimeHost;
-        $this->httpClient = $httpClient ?? HttpClient::create();
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -39,10 +39,10 @@ class AwsRuntimeClient
      * @param string $path
      * @param string|null $body
      * @param string $contentType
-     * @return ResponseInterface
-     * @throws TransportExceptionInterface
+     * @return array
      */
-    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain'): ResponseInterface
+    #[ArrayShape(['response' => "\bool|string", 'headers' => "array", 'status' => "int"])]
+    protected function request(string $method, string $path, ?string $body = null, string $contentType = 'text/plain', bool $blocking = false): array
     {
         $method = strtoupper($method);
         $url = sprintf(
@@ -53,6 +53,7 @@ class AwsRuntimeClient
 
         return $this->httpClient->request($method, $url, [
             'body' => $body,
+            'blocking' => true,
             'headers' => [
                 'Content-Type' => $contentType
             ],
@@ -60,11 +61,11 @@ class AwsRuntimeClient
     }
 
     /**
-     * @param \Throwable $exception
+     * @param Throwable $exception
      * @param string|null $requestId
-     * @throws TransportExceptionInterface|\JsonException
+     * @throws JsonException
      */
-    public function handleInvocationError(\Throwable $exception, string $requestId = null): void
+    public function handleInvocationError(Throwable $exception, string $requestId = null): void
     {
         $output = [
             'errorMessage' => sprintf('InvocationError Occurred: "%s"', $exception->getMessage()),
@@ -76,11 +77,11 @@ class AwsRuntimeClient
     }
 
     /**
-     * @param \Throwable $throwable
+     * @param Throwable $throwable
      * @throws TransportExceptionInterface
-     * @throws \JsonException
+     * @throws JsonException
      */
-    public function handleInitializationException(\Throwable $throwable): void
+    public function handleInitializationException(Throwable $throwable): void
     {
         $output = [
             'errorMessage' => sprintf('InitializationException Occured: "%s"', $throwable->getMessage()),
@@ -94,18 +95,17 @@ class AwsRuntimeClient
 
     /**
      * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
-     * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
+     * @throws JsonException
      */
     public function getEvent(): array
     {
-        $request = $this->request('GET', 'invocation/next');
-        $headers = $request->getHeaders(false);
+        $response = $this->request('GET', 'invocation/next');
+        $headers = $response['headers'];
 
         return [
-            $request->toArray(false),
+            json_decode($response['response'], true, 512, JSON_THROW_ON_ERROR),
             $headers,
             reset($headers['lambda-runtime-aws-request-id'])
         ];
@@ -115,7 +115,7 @@ class AwsRuntimeClient
      * @param string $eventId
      * @param array $payload
      * @throws TransportExceptionInterface
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function respondToEvent(string $eventId, array $payload): void
     {
