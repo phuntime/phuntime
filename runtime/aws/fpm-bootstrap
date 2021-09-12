@@ -7,7 +7,15 @@ use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$runtime = \Phuntime\Aws\AwsRuntime::fromEnvironment($_SERVER);
+
+$awsContext = \Phuntime\Aws\AwsContext::fromArray($_SERVER);
+$httpClient = new \Phuntime\Core\HttpClient\BlockingHttpClient();
+$awsRuntimeClient = new \Phuntime\Aws\AwsRuntimeClient(
+    $awsContext->getRuntimeHost(),
+    $httpClient
+);
+
+$runtime = new \Phuntime\Aws\AwsRuntime($awsContext, $awsRuntimeClient);
 
 $logger = $runtime->getLogger();
 $function = new \Phuntime\Fpm\FpmHandler($runtime->getContext(), $logger);
