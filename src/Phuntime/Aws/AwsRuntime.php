@@ -33,11 +33,12 @@ class AwsRuntime implements RuntimeInterface
 
     public function __construct(
         AwsContext $context,
-        ?AwsRuntimeClient $runtimeClient = null
+        AwsRuntimeClient $runtimeClient
     )
     {
         $this->context = $context;
-        $this->runtimeClient = $runtimeClient ?? new AwsRuntimeClient($context->getRuntimeHost());
+        $this->runtimeClient = $runtimeClient;
+        $this->logger = new AwsLogger();
     }
 
     /**
@@ -120,21 +121,6 @@ class AwsRuntime implements RuntimeInterface
             ),
             $throwable->getTrace()
         );
-    }
-
-    /**
-     * Creates a new instance of AwsRuntime with all configuration taken from environment variables
-     * @param array $env - inject $_ENV here
-     * @return static
-     */
-    public static function fromEnvironment(array $env): self
-    {
-        $self = new self(
-            AwsContext::fromArray($env)
-        );
-        $self->logger = new AwsLogger();
-
-        return $self;
     }
 
     public function getContext(): ContextInterface
