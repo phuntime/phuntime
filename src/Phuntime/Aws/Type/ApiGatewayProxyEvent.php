@@ -16,6 +16,7 @@ class ApiGatewayProxyEvent implements EventInterface
 
     protected array $payload;
     protected string $httpVersion;
+    protected string $httpMethod;
     protected string $path;
     protected string $domainName;
     protected string $requestId;
@@ -31,7 +32,7 @@ class ApiGatewayProxyEvent implements EventInterface
     public static function fromArray(array $payload): self
     {
         $object = new self();
-        $object->httpVersion = $payload['httpMethod'];
+        $object->httpMethod = $payload['httpMethod'];
         $object->path = $payload['path'];
         $object->domainName = $payload['requestContext']['domainName'];
         $object->requestId = $payload['requestContext']['requestId'];
@@ -41,6 +42,10 @@ class ApiGatewayProxyEvent implements EventInterface
         return $object;
     }
 
+    /**
+     * @deprecated
+     * @return string
+     */
     public function getVersion(): string
     {
         return '1.0';
@@ -48,7 +53,7 @@ class ApiGatewayProxyEvent implements EventInterface
 
     public function getHttpMethod(): string
     {
-        return $this->httpVersion;
+        return $this->httpMethod;
     }
 
     public function getPath(): string
