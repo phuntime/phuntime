@@ -18,6 +18,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     protected string $path;
     protected string $domainName;
     protected string $rawQueryString;
+    protected array $queryStringParameters;
 
     /**
      * @psalm-pure
@@ -31,6 +32,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
         $object->path = $payload['requestContext']['http']['path'];
         $object->domainName = $payload['requestContext']['domainName'];
         $object->rawQueryString = $payload['rawQueryString'];
+        $object->queryStringParameters = $payload['queryStringParameters'];
 
         return $object;
     }
@@ -90,5 +92,20 @@ class ApiGatewayV2ProxyEvent implements EventInterface
         return sprintf('https://%s%s?%s', $this->domainName, $this->path, $this->rawQueryString);
     }
 
+    /**
+     * @return string
+     */
+    public function getRawQueryString(): string
+    {
+        return $this->rawQueryString;
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryStringParameters(): array
+    {
+        return $this->queryStringParameters;
+    }
 
 }

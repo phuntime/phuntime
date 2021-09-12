@@ -6,8 +6,7 @@ namespace Phuntime\Bridge\Aws;
 
 use Phuntime\Aws\Type\ApiGatewayProxyEvent;
 use Phuntime\Aws\Type\ApiGatewayProxyResult;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\RequestInterface;
+use Phuntime\Aws\Type\ApiGatewayV2ProxyEvent;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,16 +24,26 @@ class ApiGatewayPsrBridge
 
     /**
      * @TODO: add tests for v2 event
-     * @param ApiGatewayProxyEvent $event
+     * @param ApiGatewayProxyEvent|ApiGatewayV2ProxyEvent $event
      * @return ServerRequestInterface
      */
-    public function apiGwToPsr7Request(ApiGatewayProxyEvent $event): ServerRequestInterface
+    public function apiGwToPsr7Request(ApiGatewayProxyEvent|ApiGatewayV2ProxyEvent $event): ServerRequestInterface
     {
+        $qs = [];
+
+        if($event instanceof ApiGatewayProxyEvent) {
+            $qs = $event->getMultiValueQueryStringParameters();
+        }
+
+        if($event instanceof ApiGatewayV2ProxyEvent) {
+            $qs = $event->getQueryStringParameters();
+        }
+
         return
             $this->requestFactory->createServerRequest(
                 $event->getHttpMethod(),
                 $event->buildUrl()
-            )->withQueryParams($event->getMultiValueQueryStringParameters());
+            )->withQueryParams($qs);
     }
 
     public function psr7ResponseToApiGw(ResponseInterface $response): ApiGatewayProxyResult

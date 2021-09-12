@@ -2,6 +2,8 @@
 <?php
 declare(strict_types=1);
 
+use Phuntime\Aws\Type\ApiGatewayProxyEvent;
+use Phuntime\Aws\Type\ApiGatewayV2ProxyEvent;
 use Phuntime\Fpm\PhpFpmProcess;
 use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
 
@@ -20,9 +22,9 @@ $runtime = new \Phuntime\Aws\AwsRuntime($awsContext, $awsRuntimeClient);
 $logger = $runtime->getLogger();
 $function = new \Phuntime\Fpm\FpmHandler($runtime->getContext(), $logger);
 $fpmProcess = new PhpFpmProcess(
-        $logger,
-        $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm',
-        $_SERVER['FPM_CONFIG_PATH'] ?? '/opt/php/php-fpm.conf'
+    $logger,
+    $_SERVER['FPM_PATH'] ?? '/opt/bin/php-fpm',
+    $_SERVER['FPM_CONFIG_PATH'] ?? '/opt/php/php-fpm.conf'
 );
 
 $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
@@ -45,14 +47,22 @@ try {
  */
 while (true) {
     try {
-        /** @var \Phuntime\Core\Contract\IncomingEvent $event */
         $event = $runtime->getNextEvent();
 
-        if(!$classifier->isApiGatewayV1ProxyEvent($event->getPayload())) {
+        /** @var ApiGatewayV2ProxyEvent|ApiGatewayProxyEvent|null $apiGwEvent */
+        $apiGwEvent = null;
+        if($classifier->isApiGatewayV1ProxyEvent($event->getPayload())) {
+            $apiGwEvent = ApiGatewayProxyEvent::fromArray($event->getPayload());
+        }
+
+        if($classifier->isApiGatewayV2ProxyEvent($event->getPayload())) {
+            $apiGwEvent = ApiGatewayV2ProxyEvent::fromArray($event->getPayload());
+        }
+
+        if($apiGwEvent === null) {
             throw new \LogicException('Given event is not a Api Gateway Request');
         }
 
-        $apiGwEvent = \Phuntime\Aws\Type\ApiGatewayProxyEvent::fromArray($event->getPayload());
         $psrRequest = $apiGwPsr->apiGwToPsr7Request($apiGwEvent);
         $response = $function->handleEvent($psrRequest);
         $proxyResult = $apiGwPsr->psr7ResponseToApiGw($response);
