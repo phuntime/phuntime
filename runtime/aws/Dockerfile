@@ -52,7 +52,9 @@ RUN EXTENSION_DIR=/opt/php/ext ./configure --prefix=/opt/php \
     --disable-short-tags \
     --without-pear \
     --with-readline \
-    --with-config-file-path=/opt/php
+    --with-config-file-path=/opt/php \
+    --enable-pcntl
+
 
 RUN make -j $(nproc) && make install
 
