@@ -46,14 +46,25 @@ class ApiGatewayPsrBridge
             )->withQueryParams($qs);
     }
 
-    public function psr7ResponseToApiGw(ResponseInterface $response): ApiGatewayProxyResult
+    public function psr7ResponseToApiGw(ResponseInterface $response, int $apiGwVersion): ApiGatewayProxyResult
     {
         $result = new ApiGatewayProxyResult();
         $result->setBody((string)$response->getBody());
         $result->setStatusCode($response->getStatusCode());
         $result->setBase64Encoded(false);
-        $result->setMultiValueHeaders($response->getHeaders());
+        if($apiGwVersion === 1) {
+            $result->setMultiValueHeaders($response->getHeaders());
+        }
 
+        if($apiGwVersion === 2) {
+            $headers = [];
+            foreach ($response->getHeaders() as $headerName => $headerValue) {
+                $headers[$headerName] = reset($headerValue);
+            }
+
+            $result->setHeaders($headers);
+        }
+        error_log(json_encode($response->getHeaders()));
 
         return $result;
     }
