@@ -22,6 +22,8 @@ class ApiGatewayProxyEvent implements EventInterface
     protected string $requestId;
     protected array $multiValueQueryStringParameters;
     protected array $queryStringParameters;
+    protected string $body;
+    protected array $headers;
 
     /**
      * @psalm-pure
@@ -38,6 +40,8 @@ class ApiGatewayProxyEvent implements EventInterface
         $object->requestId = $payload['requestContext']['requestId'];
         $object->multiValueQueryStringParameters = $payload['multiValueQueryStringParameters'] ?? [];
         $object->queryStringParameters = $payload['queryStringParameters'] ?? [];
+        $object->body = $payload['body'] ?? '';
+        $object->headers = $payload['headers'] ?? [];
 
         return $object;
     }
@@ -106,5 +110,19 @@ class ApiGatewayProxyEvent implements EventInterface
         return $this->queryStringParameters;
     }
 
+    /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
 
+    /**
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
 }

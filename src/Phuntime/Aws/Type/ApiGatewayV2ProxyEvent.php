@@ -19,6 +19,8 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     protected string $domainName;
     protected string $rawQueryString;
     protected ?array $queryStringParameters;
+    protected ?string $body;
+    protected array $headers;
 
     /**
      * @psalm-pure
@@ -33,6 +35,8 @@ class ApiGatewayV2ProxyEvent implements EventInterface
         $object->domainName = $payload['requestContext']['domainName'];
         $object->rawQueryString = $payload['rawQueryString'];
         $object->queryStringParameters = $payload['queryStringParameters'] ?? [];
+        $object->body = $payload['body'] ?? null;
+        $object->headers = $payload['headers'] ?? [];
 
         return $object;
     }
@@ -108,4 +112,19 @@ class ApiGatewayV2ProxyEvent implements EventInterface
         return $this->queryStringParameters;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getBody(): ?string
+    {
+        return $this->body;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
 }
