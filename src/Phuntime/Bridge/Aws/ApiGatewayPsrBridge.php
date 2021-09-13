@@ -11,6 +11,7 @@ use Phuntime\Aws\Type\ApiGatewayV2ProxyEvent;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function base64_decode;
 
 /**
  * @license MIT
@@ -41,6 +42,10 @@ class ApiGatewayPsrBridge
             $qs = $event->getQueryStringParameters();
         }
 
+        $body = (string)$event->getBody();
+        if($event->isBase64Encoded()) {
+            $body = base64_decode($body);
+        }
 
         $request = $this
             ->requestFactory
@@ -50,7 +55,7 @@ class ApiGatewayPsrBridge
             )
             ->withQueryParams($qs)
             ->withBody(
-                Stream::create((string)$event->getBody())
+                Stream::create($body)
             );
 
         foreach ($event->getHeaders() as $name => $value) {
