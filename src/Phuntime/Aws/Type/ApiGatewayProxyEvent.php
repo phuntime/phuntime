@@ -24,6 +24,7 @@ class ApiGatewayProxyEvent implements EventInterface
     protected array $queryStringParameters;
     protected string $body;
     protected array $headers;
+    protected bool $isBase64Encoded;
 
     /**
      * @psalm-pure
@@ -42,6 +43,7 @@ class ApiGatewayProxyEvent implements EventInterface
         $object->queryStringParameters = $payload['queryStringParameters'] ?? [];
         $object->body = $payload['body'] ?? '';
         $object->headers = $payload['headers'] ?? [];
+        $object->isBase64Encoded = $payload['isBase64Encoded'];
 
         return $object;
     }
@@ -124,5 +126,13 @@ class ApiGatewayProxyEvent implements EventInterface
     public function getHeaders(): array
     {
         return $this->headers;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBase64Encoded(): bool
+    {
+        return $this->isBase64Encoded;
     }
 }
