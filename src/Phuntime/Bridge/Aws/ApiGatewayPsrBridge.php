@@ -34,12 +34,16 @@ class ApiGatewayPsrBridge
     {
         $qs = [];
 
+        $cookies = [];
+
         if ($event instanceof ApiGatewayProxyEvent) {
+            //@TODO implement cookies for apigw v1
             $qs = $event->getMultiValueQueryStringParameters();
         }
 
         if ($event instanceof ApiGatewayV2ProxyEvent) {
             $qs = $event->getQueryStringParameters();
+            $cookies = $event->getCookies();
         }
 
         $body = (string)$event->getBody();
@@ -60,6 +64,10 @@ class ApiGatewayPsrBridge
 
         foreach ($event->getHeaders() as $name => $value) {
             $request = $request->withHeader($name, $value);
+        }
+
+        if(count($cookies) > 0) {
+            $request = $request->withCookieParams($cookies);
         }
 
         return $request;

@@ -22,6 +22,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     protected ?string $body;
     protected array $headers;
     protected bool $isBase64Encoded;
+    protected array $cookies;
 
     /**
      * @psalm-pure
@@ -39,6 +40,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
         $object->body = $payload['body'] ?? null;
         $object->headers = $payload['headers'] ?? [];
         $object->isBase64Encoded = $payload['isBase64Encoded'];
+        $object->cookies = $payload['cookies'] ?? [];
 
         return $object;
     }
@@ -136,5 +138,13 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     public function isBase64Encoded(): bool
     {
         return $this->isBase64Encoded;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
     }
 }
