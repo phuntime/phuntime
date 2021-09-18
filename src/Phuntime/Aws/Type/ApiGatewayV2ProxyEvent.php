@@ -141,6 +141,7 @@ class ApiGatewayV2ProxyEvent implements EventInterface
     }
 
     /**
+     * Each string is a raw cookie, you need to unwrap them by yourself.
      * @return string[]
      */
     public function getCookies(): array
