@@ -14,6 +14,7 @@ class ApiGatewayProxyResult
     protected int $statusCode;
     protected array $headers = [];
     protected array $multiValueHeaders = [];
+    protected array $cookies = [];
     protected string $body;
     protected bool $base64Encoded;
 
@@ -35,13 +36,19 @@ class ApiGatewayProxyResult
             $multiValueHeaders = $this->multiValueHeaders;
         }
 
-        return [
+        $output = [
             'statusCode' => $this->statusCode,
             'multiValueHeaders' => $multiValueHeaders,
             'headers' => $headers,
             'body' => $this->body,
-            'isBase64Encoded' => $this->base64Encoded
+            'isBase64Encoded' => $this->base64Encoded,
         ];
+
+        if(count($this->cookies) > 0) {
+            $output['cookies'] = $this->cookies;
+        }
+
+        return $output;
     }
 
     /**
@@ -84,5 +91,11 @@ class ApiGatewayProxyResult
         $this->base64Encoded = $base64Encoded;
     }
 
-
+    /**
+     * @param array $cookies
+     */
+    public function setCookies(array $cookies): void
+    {
+        $this->cookies = $cookies;
+    }
 }
