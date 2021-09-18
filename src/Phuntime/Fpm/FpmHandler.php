@@ -86,6 +86,15 @@ class FpmHandler
             $httpRequest = $httpRequest->withHeader($psrHeaderKey, reset($headerValues));
         }
 
+        $cookiePairs = [];
+        foreach ($request->getCookieParams() as $cookieName => $cookieVal) {
+            $cookiePairs[] = sprintf('%s=%s', $cookieName, $cookieVal);
+        }
+
+        if(count($cookiePairs) > 0) {
+            $httpRequest = $httpRequest->withHeader('Cookie', implode('; ', $cookiePairs));
+        }
+
         /**
          * FPM requests are handled by using Swoole Coroutine FastCGI Client
          * (@see https://www.swoole.co.uk/docs/modules/swoole-coroutine-fastcgi-client)
