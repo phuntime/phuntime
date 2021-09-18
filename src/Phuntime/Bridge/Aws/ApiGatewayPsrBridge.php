@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use function base64_decode;
+use function explode;
 
 /**
  * @license MIT
@@ -43,7 +44,11 @@ class ApiGatewayPsrBridge
 
         if ($event instanceof ApiGatewayV2ProxyEvent) {
             $qs = $event->getQueryStringParameters();
-            $cookies = $event->getCookies();
+            $rawCookies = $event->getCookies();
+            foreach ($rawCookies as $rawCookie) {
+                [$rawCookieName, $rawCookieVal] = explode('=', $rawCookie);
+                $cookies[$rawCookieName] = $rawCookieVal;
+            }
         }
 
         $body = (string)$event->getBody();
