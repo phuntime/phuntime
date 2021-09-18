@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `ApiGatewayPsrBridge` supports `ApiGatewayV2ProxyEvent` to PSR conversion
 - added `pcntl` extension
+- Passing cookies from function to client
 
 ### Changed
 - separated `ApiGatewayProxyEvent` and `ApiGatewayV2ProxyEvent`
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Timeouts are not breaking the runtime
 - Headers are passed back to API Gateway
+- `REQUEST_URI` passed to FPM now contains a query string
 
 ## [0.1.0] - 2020-08-30
 ### Added
