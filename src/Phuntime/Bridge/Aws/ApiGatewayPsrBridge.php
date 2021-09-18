@@ -78,6 +78,11 @@ class ApiGatewayPsrBridge
         if ($apiGwVersion === 2) {
             $headers = [];
             foreach ($response->getHeaders() as $headerName => $headerValue) {
+                if($headerName === 'Set-Cookie' && is_array($headerValue) && count($headerValue) > 0) {
+                    $result->setCookies($headerValue);
+                    continue;
+                }
+
                 $headers[$headerName] = reset($headerValue);
             }
 
