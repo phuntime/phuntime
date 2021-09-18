@@ -93,7 +93,7 @@ class FpmHandler
          */
         $fcgi = $this->fastCgiClient;
         $fcgiResponse = null;
-        \Co\run(static function() use ($fcgi, $httpRequest, &$fcgiResponse) {
+        \Co\run(static function () use ($fcgi, $httpRequest, &$fcgiResponse) {
             $fcgiResponse = $fcgi->execute($httpRequest);
         });
 
@@ -107,6 +107,10 @@ class FpmHandler
         $headers = $fcgiResponse->getHeaders();
         foreach ($headers as $headerName => $headerValue) {
             $response = $response->withHeader($headerName, $headerValue);
+        }
+
+        if (count($fcgiResponse->getSetCookieHeaderLines()) > 0) {
+            $response = $response->withHeader('Set-Cookie', $fcgiResponse->getSetCookieHeaderLines());
         }
 
         return $response
