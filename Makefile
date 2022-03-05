@@ -1,12 +1,20 @@
-PHP_8_VERSION = "8.0.10"
+PHP_81_VERSION = "8.1.3"
+PHP_80_VERSION = "8.0.10"
 PHP_7_VERSION = "7.4.7"
 BISON_VERSION = "3.4"
 SWOOLE_VERSION = "4.5.9"
 
 
+aws-81-fpm:
+	 cd ./runtime/aws && ./build.sh \
+ 		--php-version ${PHP_81_VERSION} \
+ 		--bison-version ${BISON_VERSION} \
+ 		--swoole-version ${SWOOLE_VERSION} \
+ 		--output $(shell pwd)/build/aws-runtime
+
 aws-80-fpm:
 	 cd ./runtime/aws && ./build.sh \
- 		--php-version ${PHP_8_VERSION} \
+ 		--php-version ${PHP_80_VERSION} \
  		--bison-version ${BISON_VERSION} \
  		--swoole-version ${SWOOLE_VERSION} \
  		--output $(shell pwd)/build/aws-runtime
