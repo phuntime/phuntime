@@ -42,6 +42,8 @@ WORKDIR ${BUILD_DIR}/php-src-php-${PHP_VERSION}
 RUN ./buildconf --force
 RUN EXTENSION_DIR=/opt/php/ext ./configure --prefix=/opt/php \
     --enable-fpm \
+    --enable-sockets \
+    --enable-pcntl \
     --with-openssl \
     --with-curl \
 #    --with-zip \ #TODO add libzip
@@ -53,8 +55,8 @@ RUN EXTENSION_DIR=/opt/php/ext ./configure --prefix=/opt/php \
     --without-pear \
     --with-readline \
     --with-config-file-path=/opt/php \
-    --enable-pcntl
-
+    --with-mysqli=mysqlnd \
+    --with-pdo-mysql=mysqlnd
 
 RUN make -j $(nproc) && make install
 
@@ -69,9 +71,12 @@ COPY ./php-fpm.conf ${FPM_CONF_LOCATION}
 
 # install swoole
 WORKDIR ${BUILD_DIR}
-RUN curl -vsL https://github.com/openswoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
+RUN curl -vsL https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/swoole-src-${SWOOLE_VERSION}
-RUN phpize && ./configure && make && make install
+RUN phpize
+RUN ./configure
+RUN make
+RUN make install
 RUN echo "extension=swoole.so" >> ${INI_FILE_LOCATION}
 
 
