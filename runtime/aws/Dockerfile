@@ -69,7 +69,7 @@ COPY ./php-fpm.conf ${FPM_CONF_LOCATION}
 
 # install swoole
 WORKDIR ${BUILD_DIR}
-RUN curl -vsL https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
+RUN curl -vsL https://github.com/openswoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz | tar -xvz
 WORKDIR ${BUILD_DIR}/swoole-src-${SWOOLE_VERSION}
 RUN phpize && ./configure && make && make install
 RUN echo "extension=swoole.so" >> ${INI_FILE_LOCATION}
