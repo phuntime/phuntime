@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eou pipefail
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
